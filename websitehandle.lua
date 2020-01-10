@@ -20,7 +20,7 @@ function module.setupServer(Server)
 	StaticFS.addstatic(EXECPATH.."Websites/nevs/Meridian/","/")
 	StaticFS.addstatic(EXECPATH.."Websites/Analytics/","/analytics")
 
-	Server:use(function(req, res, next)
+	Server:use(function(req, res, next)--
 		local t = StaticFS.use(req, res)
 		if t then next() end
 	end)
