@@ -30,6 +30,10 @@ function module.setupServer(Server)
 		end)()
 	end)
 
+	Server:get("/ping", function(req, res)
+		res:finish("<p>pong</p>")
+	end)
+
 	Server:get("/updatewebsites",function(req, res)
 		coroutine.wrap(function()
 			res:write("<p>Updating Analytics...\n</p>")
@@ -47,6 +51,10 @@ function module.setupServer(Server)
 	--StaticFS.addstatic(_G.EXECPATH.."Websites/nevs/Meridian/","/")
 	StaticFS.addstatic(_G.EXECPATH.."Websites/Analytics/build/","/")
 
+	--StaticFS.addstatic(_G.EXECPATH.."ssl-certs/","/.well-known/acme-challenge")
+	--StaticFS.addstatic(_G.EXECPATH.."zerossl/","/.well-known/acme-challenge")
+
+
 	Server:use(function(req, res, next)--
 		local t = StaticFS.use(req, res)
 		if t then next() end
@@ -54,3 +62,11 @@ function module.setupServer(Server)
 end
 
 return module
+
+
+
+--[[
+
+le.pl --key account.key --csr mydomain.csr --csr-key mydomain.key --crt mydomain.crt --domains "server.roblox.observer" --path /home/bitnami/zerossl/ --generate-missing --unlink
+
+]]
