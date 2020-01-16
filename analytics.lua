@@ -13,6 +13,7 @@ local tick = function() return helpers.getTime()/1000 end
 
 local quickio = require"ose/quickio"
 local auth = require"ose/authent"
+local pafix = require"ose/pafix"
 
 local function tableupdate(t1,t2)
 	for i,v in pairs(t2) do
@@ -26,6 +27,20 @@ local function tableupdate(t1,t2)
 		end
 	end
 end
+
+local function tablemerge(t1,t2)
+	for i,v in pairs(t2) do
+		if t1[i] ~= nil then
+			if type(v)=="table" then
+				t1[i]={}
+				tableupdate(t1[i],v)
+			else
+				t1[i]=v
+			end
+		end
+	end
+end
+
 
 local module = {}
 local Analytics = {}
@@ -80,13 +95,13 @@ function getMetadata(key) --from file
 	if Analytics[key] then
 		return updateMetadata(Analytics[key].metadata)
 	else
-		return updateMetadata(loadstring(quickio.read("analytics"..OSS..key..OSS.."metadata"))())
+		return updateMetadata(loadstring(quickio.read(pafix("analytics/%s/metadata",key)))())
 	end
 end
 
 function setMetadata(key,metadata) --to file
 	if not direxists(key) then return false,"Key doesn't exists",500 end
-	return quickio.write("analytics"..OSS..key..OSS.."metadata",TableToLoadstringFormat(metadata))
+	return quickio.write(pafix("analytics/%s/metadata",key),TableToLoadstringFormat(metadata)) --pafix("analytics/%s/metadata",key)
 end
 
 function getKeyToRAM(key)
@@ -106,7 +121,7 @@ function saveKey(key)
 	do local s,n,e = setMetadata(key,Analytics[key].metadata) if not s then return s,n,e end end --Save metadata
 
 	for DataField in pairs(Analytics[key].metadata.fields) do --Save data fields
-		local f,s = io.open("analytics"..OSS..key..OSS..DataField,"a+")
+		local f,s = io.open(pafix("analytics/%s/%s",key,DataField),"a+") --pafix("analytics/%s/%s",key,DataField)
 		if not f then return f,s,500 end
 
 		local n = Analytics[key][DataField] or 0
@@ -120,9 +135,10 @@ end
 
 local close = false
 
-function module.createKey(key,specifics)
+function module.createKey(key,sub,usermeta,specifics)
 	if close then return false,"Server is closing",503 end
 	if type(key)~="string" then return false,"Key is not a string",400 end
+	if string.len(key)<10 then return false,"Key can't be less than 10 characters",400 end
 	if Analytics[key] or direxists(key) then return false,"Key already exists",400 end
 
 	if makedir(key)~=true then return false,"Failed to create key directory",500 end --Creates the directory
@@ -136,13 +152,20 @@ function module.createKey(key,specifics)
 	local duration = defCacheDuration
 	if specifics.duration then duration = specifics.duration>StepDuration and specifics.duration or StepDuration end 
 
-	local metadata = {tick=ct,fields={},duration=duration,subs=specifics.subs}
-	updateMetadata(metadata)
+	local metadata = {tick=ct,fields={},duration=duration,subs={}}
+	metadata.subs[sub]={role="own"} --Put the suba s the owner of the key into keys metadata
+	metadata.accessKey = "access"
 
-	do local s,n,e = setMetadata(key,metadata) if not s then return s,n,e end end --Save metadata
+
+	updateMetadata(metadata) --Update metadata of the key
+	do local s,n,e = setMetadata(key,metadata) if not s then return s,n,e end end --Save metadata of key
+
+	--local usermeta = auth.getUserMetadata(sub) --Get the metadata of the user who created the key and save it
+	usermeta.keys[key]=true
+	auth.setUserMetadata(sub,usermeta)
 
 	Analytics[key] = {metadata=metadata}
-	return true,"Success",200
+	return true,metadata,200
 end
 
 function module.update(key,DataField,amount)
@@ -238,37 +261,40 @@ function module.getstreaming(res,key,DataField,readbytes)
 	local v = Analytics[key][DataField]
 	if not Analytics[key].metadata.fields[DataField] then return res:send("No data",400) end
 
-	local fd = "analytics"..OSS..key..OSS..DataField
+	local fd = pafix("analytics/%s/%s",key,DataField)
 	if fs.existsSync(fd) then
 		fs.stat(fd,function(err,stat)
 			if err then return res:send("Filesystem get stat failed",500) end
 			fs.open(fd,"r",function(err, fd)
+				if err then return res:send("File open failed",500) end
 
-				--local readbytes = times*20
+				local s,n = pcall(function()
+					local buffer_size = 100
+					readbytes = readbytes + buffer_size
 
-				local buffer_size = 100
-				readbytes = readbytes + buffer_size
+					local readt = math.ceil(readbytes/buffer_size)
 
-				local readt = math.ceil(readbytes/buffer_size)
-
-				local offset = 0
-				if readbytes > stat.size then
-					readt = math.ceil(stat.size/buffer_size)
-					offset = stat.size%buffer_size
-				end
-
-				for i = 0, readt-1 do
-					local o = stat.size-buffer_size*(readt-i)+buffer_size-offset
-
-					local bytes,err = fs.readSync(fd, buffer_size, o)
-					if bytes then
-						res:write(bytes)
-					else
-						print("Error:", err)
+					local offset = 0
+					if readbytes > stat.size then
+						readt = math.ceil(stat.size/buffer_size)
+						offset = stat.size%buffer_size
 					end
-				end
 
-				res:finish(" "..tostring(v or 0))
+					for i = 0, readt-1 do
+						local o = stat.size-buffer_size*(readt-i)+buffer_size-offset
+
+						local bytes,err = fs.readSync(fd, buffer_size, o)
+						if bytes then
+							res:write(bytes)
+						else
+							print("Error:", err)
+						end
+					end
+
+					res:finish(" "..tostring(v or 0))
+				end)
+
+				if not s then return res:send(n,500) end
 			end)
 		end)
 		
@@ -295,27 +321,60 @@ function module.close()
 	Analytics = {}
 end
 
-function module.setupServer(server)
-	if server then--for debugging
+function module.setupTimer()
+	timer.setInterval(1000*module.StepDuration,module.step)
+end
 
-	server:get("/analytics/getMetadata/:key", function(req, res)
-		local key = req.pargams.key
-		if tonumber(key) then return res:send("Key needs to be a string",400) end
-		print("Get key",key)
+
+
+function module.setupServer(server)
+	if not server then return end--for debugging
+
+	local function CheckAccessSubKey(res,token,key)
+		local sub,n,e = auth.tokenLoggedin(token)
+		if not sub then return true,res:send(n,e) end
+
 		local metadata,n,e = getMetadata(key)
-		if not metadata then return res:send(n,e) end
-		metadata = tableToString(metadata)
-		res:send(metadata,200)
+		if not metadata then return true,res:send(n,e) end
+			
+		if not metadata.subs[sub] then return true,res:send("No access to key",401) end
+	end
+
+	server:get("/analytics/getMetadata", function(req, res)
+		coroutine.wrap(function()
+			local key = req.body.key
+			if tonumber(key) then return res:send("Key needs to be a string",400) end
+			print("Get key",key)
+
+			local token = auth.GetToken(req)--req.body.token or req.headers.token or req.cookies.token
+
+			if CheckAccessSubKey(res,token,key) then return end
+
+			local metadata = Analytics[key].metadata
+			
+			res:json(metadata,200)
+		end)()
 	end)
 
-	server:get("/analytics/createKey/:key", function(req, res)
-		local key = req.params.key
-		if tonumber(key) then return res:send("Key needs to be a string",400) end
-		if string.len(key)<5 then return res:send("Key length can't be less than 5",400) end
+	server:get("/analytics/createKey", function(req, res)
+		coroutine.wrap(function()
+			local key = req.body.key
+			if tonumber(key) then return res:send("Key needs to be a string",400) end
+			if string.len(key)<10 then return res:send("Key length can't be less than 5",400) end
 
-		local s,n,e = module.createKey(key)
+			local token = auth.GetToken(req)--req.body.token or req.headers.token or req.cookies.token
 
-		res:send(n,e)
+			local sub,n,e = auth.tokenLoggedin(token)
+			if not sub then return res:send(n,e) end
+
+			local usermeta = auth.getUserMetadata(sub)
+			if not usermeta then return res:send("No user metadata found",500) end
+
+			local s,n,e = module.createKey(key,sub,usermeta)
+			if not s then res:send(n,e) end
+
+			res:json(n,e)
+		end)()
 	end)
 
 	local function fieldcheck(res,key,DataField,value)
@@ -333,70 +392,64 @@ function module.setupServer(server)
 		if not amount then return true,res:send("Amount needs to be a number",400) end
 	end
 
-	local function tokencheck(res,key,token)
-		local subs_with_access
-		if not Analytics[key] then
-			getKeyToRAM(key)
-			Analytics[key].metadata.tick = tick()
-		end
-		if token then
-			local s,n,e = auth.tokenLoggedin(token)
-			if not s then return true,res:send(n,e) end
-		else
-
-		end
-	end
-
 	server:post("/analytics/update", function(req, res)
-		local key = req.body.key
-		local DataField = req.body.DataField
-		local amount = req.body.amount
+		coroutine.wrap(function()
+			local key = req.body.key
+			local DataField = req.body.DataField
+			local amount = req.body.amount
 
-		if fieldcheck(res,key,DataField,amount) then return end
+			if fieldcheck(res,key,DataField,amount) then return end
 
-		local token = req.body.token or req.headers.token or req.cookies.token
-		if token then
+			local token = auth.GetToken(req)--req.body.token or req.headers.token or req.cookies.token
 
-		end
+			if CheckAccessSubKey(res,token,key) then return end
 
-		local s,n,e = module.update(key,DataField,amount)
+			local s,n,e = module.update(key,DataField,amount)
 
-		res:send(n,e)
+			res:send(n,e)
+		end)()
 	end)
 
 	server:post("/analytics/get", function(req, res)
-		local key = req.body.key
-		local DataField = req.body.DataField
-		local amount = req.body.amount
+		coroutine.wrap(function()
+			local key = req.body.key
+			local DataField = req.body.DataField
+			local amount = req.body.amount
 
-		if fieldcheck(res,key,DataField,amount) then return end
+			if fieldcheck(res,key,DataField,amount) then return end
 
-		times = math.floor(times)
-		if times<1 then return res:send("Times can't be less than 1",400) end
-		if times>4086 then return res:send("Times is too big",400) end
+			times = math.floor(times)
+			if times<1 then return res:send("Times can't be less than 1",400) end
+			if times>4086 then return res:send("Times is too big",400) end
 
-		local s,n,e = module.get(key,DataField,times)
+			local token = auth.GetToken(req)--req.body.token or req.headers.token or req.cookies.token
+			if CheckAccessSubKey(res,token,key) then return end
 
-		if not s then return res:send(n,e) end
+			local s,n,e = module.get(key,DataField,times)
 
-		res:json(s,200)
+			if not s then return res:send(n,e) end
+
+			res:json(s,200)
+		end)()
 	end)
 
 	server:post("/analytics/getstreaming", function(req, res) --IMPLEMENT TOKENS AND SUBS
-		local key = req.body.key
-		local DataField = req.body.DataField
-		local bytes = req.body.bytes
+		coroutine.wrap(function()
+			local key = req.body.key
+			local DataField = req.body.DataField
+			local bytes = req.body.bytes
 
-		if fieldcheck(res,key,DataField,bytes) then return end
+			if fieldcheck(res,key,DataField,bytes) then return end
 
-		bytes = math.floor(bytes)
-		if bytes<1 then return res:send("Bytes can't be less than 1",400) end
+			bytes = math.floor(bytes)
+			if bytes<1 then return res:send("Bytes can't be less than 1",400) end
 
-		module.getstreaming(res,key,DataField,bytes)
+			local token = auth.GetToken(req)--req.body.token or req.headers.token or req.cookies.token
+			if CheckAccessSubKey(res,token,key) then return end
+
+			module.getstreaming(res,key,DataField,bytes)
+		end)()
 	end)
-
-	end
-	timer.setInterval(1000*module.StepDuration,module.step)
 end
 
 return module
