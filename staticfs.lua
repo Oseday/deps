@@ -18,8 +18,11 @@ function file_exists(nurl)
 	for _,t in pairs(filedirs) do
 		local urlfp = nurl:sub(1,t.route.l)
 		if nurl:sub(-4)==".git" then return end
+		p(nurl)
+		p(urlfp)
 		if urlfp==t.route.r then
 			local np = t.filepath..nurl:sub(t.route.l+1,-1)
+			p(np)
 			if fexist(np) then
 				files[nurl] = np
 				return np
