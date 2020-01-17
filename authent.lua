@@ -226,6 +226,7 @@ function module.setupServer(server)
 				local token = module.GetToken(req)--req.body.token or req.headers.token or req.cookies.token
 				if token then
 					local s,n,e = module.login(token)
+					if not s then print(s,n,e) end
 					res:send(n,e)
 				else
 					res:send("No token",400)
