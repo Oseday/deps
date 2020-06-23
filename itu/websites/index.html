@@ -65,7 +65,7 @@
 
         <script type="text/javascript">
             $(".form-signin").submit(function(event) {
-                $.post("login", $("#inputUsername").val()).done( function(data) {
+                $.post("login", $("#inputUsername")).done( function(data) {
                     document.location.href = "viewer/" + $("#inputUsername").val();
                 }).fail(function(){
                     //document.location.href = "viewer/" + $("#inputUsername").val(); // for omar's testing, remove later
