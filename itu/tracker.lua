@@ -190,7 +190,7 @@ function module.setupServer(server)
 		res:send("created, go back",200)
 	end)
 
-	server:post("/admin/deleteuser/", function(req, res)
+	server:post("/admin/deleteuser", function(req, res)
 		p(req.body.username)
 		if not Users[req.body.username] then
 			res:send("no user with this name, go back",400)
@@ -220,7 +220,7 @@ function module.setupServer(server)
 		res:send("created, go back",200)
 	end)
 
-	server:post("/admin/deletelocation/", function(req, res)
+	server:post("/admin/deletelocation", function(req, res)
 		if not Locations[req.body.username] then
 			res:send("no locations with this name, go back",400)
 		end

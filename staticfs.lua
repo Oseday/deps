@@ -42,6 +42,7 @@ function module.clear()
 end
 
 function module.use(req,res)
+	if req.method ~= "GET" then return true end
 	local next = false
 	local nurl = req.url
 	x = string.find(nurl,"%.html$")
