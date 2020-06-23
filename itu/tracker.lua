@@ -67,9 +67,10 @@ end
 local Users = {testuser=true}
 
 local Locations = {
-	["Lokasyon A"] = {true, "testuser"},
-	["Lokasyon B"] = {false, ""},
-	["Lokasyon C"] = {false, ""},
+	["Lokasyon A"] = {checked=true,  username="testuser"},
+	["Lokasyon B"] = {checked=true,  username="cancakir"},
+	["Lokasyon C"] = {checked=false, username=""},
+	["Lokasyon D"] = {checked=false, username=""},
 }
 
 function SaveUsers()
@@ -103,8 +104,8 @@ function module.setupServer(server)
 		local t = {}
 		for Location,tab in pairs(Locations) do
 
-			local occupancy = tab[2]
-			local isChecked = tab[1]
+			local occupancy = tab.username
+			local isChecked = tab.checked
 
 			p(req.body)
 			p(req.body.username)
@@ -130,12 +131,26 @@ function module.setupServer(server)
 
 		p(body)
 
-		for k,v in pairs(body) do
-			--if 
+		for loc,tab in pairs(Locations) do
+			if body[loc] then
+				if tab.username == ""  then
+					Locations[loc].username = username
+					Locations[loc].checked = true
+				end
+			else
+				if tab.checked and tab.username == username then
+					Locations[loc].username = ""
+					Locations[loc].checked = false
+				end
+			end
 		end
 
 		res:send("",200)
 	end)
+
+
+
+	--server:get("")
 
 
 	--[[server:get("/viewer/:username", function(req, res)
