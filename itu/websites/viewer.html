@@ -75,14 +75,15 @@
                         </li>`
                     )
                 }
+                
+                $(".list-group-item").click(function(){
+                    var checkbox = $(this).find("input[type=checkbox]");
+                    if(!checkbox.prop("disabled")){
+                        checkbox.prop("checked", !checkbox.prop("checked"))
+                    }
+                })
             }
 
-            $(".list-group-item").click(function(){
-                var checkbox = $(this).find("input[type=checkbox]");
-                if(!checkbox.prop("disabled")){
-                    checkbox.prop("checked", !checkbox.prop("checked"))
-                }
-            })
 
             $.post("tabledata", {username: username}).done(function(data) {
                 UpdateForm(data)
