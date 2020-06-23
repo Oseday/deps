@@ -74,7 +74,7 @@ local Locations = {
 
 function SaveUsers()
 	local f,w = quickio.write(pafix("itu/users"), TableToLoadstringFormat(Users))
-	if not f then warn("ERROR: Couldn't save users:", w) end
+	if not f then print("ERROR: Couldn't save users:", w) end
 end
 
 do --Server start read users
@@ -82,7 +82,7 @@ do --Server start read users
 	if f then
 		Users = loadstring(f)()
 	else
-		warn("Error opening itu/users:", w)
+		print("Error opening itu/users:", w)
 		SaveUsers()
 	end
 end
@@ -116,7 +116,7 @@ function module.setupServer(server)
 		body.username = nil
 
 		for k,v in pairs(body) do
-
+			
 		end
 
 		res:send("",200)
