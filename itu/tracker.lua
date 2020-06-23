@@ -68,8 +68,8 @@ local Users = {testuser=true}
 
 local Locations = {
 	["Lokasyon A"] = {true, "testuser"},
-	["Lokasyon B"] = {false},
-	["Lokasyon C"] = {false},
+	["Lokasyon B"] = {false, ""},
+	["Lokasyon C"] = {false, ""},
 }
 
 function SaveUsers()
@@ -107,7 +107,7 @@ function module.setupServer(server)
 		res:json(t,200)
 	end)
 
-	server:post("/tablesubmit", function(req, res)
+	server:post("/viewer/tablesubmit", function(req, res)
 		local body = req.body
 
 		local username = body.username
