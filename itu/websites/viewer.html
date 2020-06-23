@@ -79,7 +79,7 @@
              
             //${(isEnabled ? "" : "disabled checked")}>
 
-            $.post("tabledata").done(function(data) {
+            $.post("tabledata", username).done(function(data) {
                 UpdateForm(data)
             }).fail(function(){
                 document.location.href = "index"

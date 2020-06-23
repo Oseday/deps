@@ -106,6 +106,9 @@ function module.setupServer(server)
 			local occupancy = tab[2]
 			local isChecked = tab[1]
 
+			p(req.body)
+			p(req.body.username)
+
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
 			t[#t+1]={Location, isChecked, isDisabled}
