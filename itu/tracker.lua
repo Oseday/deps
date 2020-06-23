@@ -122,7 +122,7 @@ function module.setupServer(server)
 		p(body)
 
 		for k,v in pairs(body) do
-			if 
+			--if 
 		end
 
 		res:send("",200)
