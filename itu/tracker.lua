@@ -91,7 +91,7 @@ function module.setupServer(server)
 
 	server:post("/login", function(req, res)
 		local username = req.body
-		print(username)
+		p(username)
 		if Users[username] then
 			res:send("",200)
 		else
@@ -116,7 +116,7 @@ function module.setupServer(server)
 		body.username = nil
 
 		for k,v in pairs(body) do
-			
+
 		end
 
 		res:send("",200)
