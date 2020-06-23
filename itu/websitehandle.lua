@@ -10,7 +10,7 @@ local timer = require"timer"
 print("EXECPATH:",_G.EXECPATH)
 
 function module.setupServer(Server,MoonCake)
-	local ITUDir = _G.EXECPATH .. "lib/ose/itu/websites"
+	local ITUDir = _G.EXECPATH .. "deps/ose/itu/websites"
 
 	Server:get("/ping", function(req, res)
 		res:finish("<p>pong</p>")
