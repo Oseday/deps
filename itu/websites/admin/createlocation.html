@@ -56,17 +56,17 @@
     </head>
     <body class="text-center" data-gr-c-s-loaded="true">
         <form class="form-signin" action="">
-            <h1 class="h3 mb-3 font-weight-normal">Kullanıcı çıkar</h1>
-            <label for="inputUsername" class="sr-only">Kullanıcı adı:</label>
-            <input type="text" id="inputUsername" name="username" class="form-control form-username" placeholder="Kullanıcı adı" required="" autofocus="">
-            <div class="invalid-feedback">Kullanıcı adı bulunamadı</div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Çıkar</button>
+            <h1 class="h3 mb-3 font-weight-normal">Lokasyon ekle</h1>
+            <label for="inputUsername" class="sr-only">Lokasyon adı:</label>
+            <input type="text" id="inputUsername" name="username" class="form-control form-username" placeholder="Lokasyon adı" required="" autofocus="">
+            <div class="invalid-feedback">Lokasyon adı bulunamadı</div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Ekle</button>
         </form>
 
         <script type="text/javascript">
             $(".form-signin").submit(function(event) {
-                //document.location.href = "/admin/deleteuser/" + $("#inputUsername").val();
-                $.post("/admin/deleteuser", $("#inputUsername")).done( function(data) {
+                //document.location.href = "/admin/createleteuser/" + $("#inputUsername").val();
+                $.post("/admin/createlocation", $("#inputUsername")).done( function(data) {
                     document.location.href = "/admin";
                 }).fail(function(){
                     $(".form-username").toggleClass("is-invalid", true);

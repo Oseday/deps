@@ -60,12 +60,20 @@
             <label for="inputUsername" class="sr-only">Kullanıcı adı:</label>
             <input type="text" id="inputUsername" name="username" class="form-control form-username" placeholder="Kullanıcı adı" required="" autofocus="">
             <div class="invalid-feedback">Kullanıcı adı bulunamadı</div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sil</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Ekle</button>
         </form>
 
         <script type="text/javascript">
             $(".form-signin").submit(function(event) {
-                document.location.href = "/admin/createuser/" + $("#inputUsername").val();
+                //document.location.href = "/admin/createuser/" + $("#inputUsername").val();
+
+                $.post("/admin/createuser", $("#inputUsername")).done( function(data) {
+                    document.location.href = "/admin";
+                }).fail(function(){
+                    $(".form-username").toggleClass("is-invalid", true);
+                })
+
+
                 event.preventDefault();
             })
         </script>

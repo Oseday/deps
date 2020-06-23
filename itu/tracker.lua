@@ -78,12 +78,25 @@ function SaveUsers()
 	if not f then print("ERROR: Couldn't save users:", w) end
 end
 
-do --Server start read users
+function SaveLocations()
+	local f,w = quickio.write(pafix("itu/locations"), TableToLoadstringFormat(Locations))
+	if not f then print("ERROR: Couldn't save locations:", w) end
+end
+
+do --Server start read users and locations
 	local f,w = quickio.read(pafix("itu/users"))
 	if f then
 		Users = loadstring(f)()
 	else
 		print("Error opening itu/users:", w)
+		SaveUsers()
+	end
+
+	local f,w = quickio.read(pafix("itu/locations"))
+	if f then
+		Locations = loadstring(f)()
+	else
+		print("Error opening itu/locations:", w)
 		SaveUsers()
 	end
 end
@@ -149,38 +162,66 @@ function module.setupServer(server)
 	end)
 
 	server:get("/admin/userlist", function(req, res)
-		local s = "<p>"
+		local s = ""
 		for k in pairs(Users) do
 			s = s .. k .. " "
 		end
-		s = s .. "</p>"
+		s = s .. ""
 		res:send(s,200)
 	end)
 
 	server:get("/admin/locations", function(req, res)
-		local s = "<p>"
+		local s = ""
 		for k,t in pairs(Locations) do
 			s = s .. k .. ": " .. (t.username=="" and "0" or t.username) .. "\n"
 		end
-		s = s .. "</p>"
+		s = s .. ""
 		res:send(s,200)
 	end)
 
-	server:get("/admin/createuser/:username", function(req, res)
-		if Users[req.params.username] then
-			res:send("already an user with this name, go back",200)
+	server:post("/admin/createuser", function(req, res)
+		if Users[req.body.username] then
+			res:send("already an user with this name, go back",400)
 		end
-		Users[req.params.username]=true
+		Users[req.body.username]=true
 		SaveUsers()
 		res:send("created, go back",200)
 	end)
 
-	server:get("/admin/deleteuser/:username", function(req, res)
-		if not Users[req.params.username] then
-			res:send("no user with this name, go back",200)
+	server:post("/admin/deleteuser/", function(req, res)
+		if not Users[req.body.username] then
+			res:send("no user with this name, go back",400)
 		end
-		Users[req.params.username]=nil
+		Users[req.body.username]=nil
 		SaveUsers()
+		res:send("deleted, go back",200)
+	end)
+
+
+
+	server:get("/admin/resetalllocations", function(req, res)
+		for k,v in pairs(Locations) do
+			Locations[k] = {checked=false, username=""}
+		end
+		SaveLocations()
+		res:send("Locations reset, go back",200)
+	end)
+
+	server:post("/admin/createlocation", function(req, res)
+		if Locations[req.body.username] then
+			res:send("already a location with this name, go back",400)
+		end
+		Locations[req.body.username]={checked=false, username=""}
+		SaveLocations()
+		res:send("created, go back",200)
+	end)
+
+	server:post("/admin/deletelocation/", function(req, res)
+		if not Locations[req.body.username] then
+			res:send("no locations with this name, go back",400)
+		end
+		Locations[req.body.username]=nil
+		SaveLocations()
 		res:send("deleted, go back",200)
 	end)
 
