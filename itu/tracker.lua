@@ -180,19 +180,23 @@ function module.setupServer(server)
 	end)
 
 	server:post("/admin/createuser", function(req, res)
+		p(req.body.username)
 		if Users[req.body.username] then
 			res:send("already an user with this name, go back",400)
 		end
 		Users[req.body.username]=true
+		p("created")
 		SaveUsers()
 		res:send("created, go back",200)
 	end)
 
 	server:post("/admin/deleteuser/", function(req, res)
+		p(req.body.username)
 		if not Users[req.body.username] then
 			res:send("no user with this name, go back",400)
 		end
 		Users[req.body.username]=nil
+		p("deleted")
 		SaveUsers()
 		res:send("deleted, go back",200)
 	end)
@@ -224,19 +228,6 @@ function module.setupServer(server)
 		SaveLocations()
 		res:send("deleted, go back",200)
 	end)
-
-
-
-	--server:get("")
-
-
-	--[[server:get("/viewer/:username", function(req, res)
-		local username = req.params.username
-
-	end)]]
-
-
-	-- body
 end
 
 
