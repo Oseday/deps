@@ -63,8 +63,10 @@
             $("#greet").html("Hoşgeldin " + username)
 
             function UpdateForm(data){
-                for(let [locationName, isEnabled, ownedName] of Object.entries(data)){
-                    console.log(locationName, isEnabled, ownedName)
+                for(let [rowId, rowData] of Object.entries(data)){
+                    let location = rowData[1]
+                    let isEnabled = rowData[2]
+                    let ownedName = rowData[3]
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
                             ${locationName}
