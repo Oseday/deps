@@ -6,6 +6,7 @@ require"ose/server"
 local CORS = require"ose/CORS"
 
 local Tracker = require"ose/itu/tracker"
+local WebsiteHandle = require"ose/itu/websitehandle"
 
 local isHttps = false
 
@@ -29,7 +30,7 @@ function Setup(Server,port)
 	CORS.setupServer(Server)
 	--Analytics.setupServer(Server)
 	--Authentication.setupServer(Server)
-	--WebsiteHandle.setupServer(Server,MoonCake)
+	WebsiteHandle.setupServer(Server,MoonCake)
 
 	Tracker.setupServer(Server)
 
