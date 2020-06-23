@@ -64,7 +64,7 @@
 
             function UpdateForm(data){
                 for(let [rowId, rowData] of Object.entries(data)){
-                    let location = rowData[1]
+                    let locationName = rowData[1]
                     let isEnabled = rowData[2]
                     let ownedName = rowData[3]
                     $("#myLocations").append(
@@ -94,3 +94,5 @@
         </script>
     </body>
 </html>
+
+sudo ./luvit server.lua
