@@ -18,6 +18,8 @@ function module.setupServer(Server,MoonCake)
 
 	Server:get("/",function(req, res) res:sendFile(ITUDir.."/index.html") end)
 
+	Server:get("/viewer/:username",function(req, res) res:sendFile(ITUDir.."/viewer.html") end)
+
 	StaticFS.addstatic(ITUDir.."/","/")
 
 	----StaticFS.addstatic(_G.EXECPATH.."ssl-certs/","/.well-known/acme-challenge")
