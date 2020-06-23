@@ -119,8 +119,10 @@ function module.setupServer(server)
 
 		body.username = nil
 
-		for k,v in pairs(body) do
+		p(body)
 
+		for k,v in pairs(body) do
+			if 
 		end
 
 		res:send("",200)
