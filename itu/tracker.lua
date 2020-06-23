@@ -162,20 +162,20 @@ function module.setupServer(server)
 	end)
 
 	server:get("/admin/userlist", function(req, res)
-		local s = ""
+		local s = "<p>"
 		for k in pairs(Users) do
-			s = s .. k .. " "
+			s = s .. k .. "<br>"
 		end
-		s = s .. ""
+		s = s .. "</p>"
 		res:send(s,200)
 	end)
 
 	server:get("/admin/locations", function(req, res)
-		local s = ""
+		local s = "<p>"
 		for k,t in pairs(Locations) do
-			s = s .. k .. ": " .. (t.username=="" and "0" or t.username) .. "\n"
+			s = s .. k .. ": " .. (t.username=="" and "0" or t.username) .. "<br>"
 		end
-		s = s .. ""
+		s = s .. "</p>"
 		res:send(s,200)
 	end)
 
