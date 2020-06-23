@@ -2,6 +2,52 @@
 
 require"ose/server"
 
+
+local CORS = require"ose/CORS"
+
+local Tracker = require"ose/itu/tracker"
+
+local isHttps = false
+
+local mc,ip,port,porthttps
+if jit.os=="Windows" then
+	mc = "mooncake"--"./ndeps/deps/depsMoonCake/mooncake"
+	ip = "127.0.0.1"
+	port = 80
+	isHttps = false
+else
+	mc = "depsMoonCake/mooncake"
+	ip = "172.26.10.180"
+	porthttps = 443
+	port = 80
+	_G.EXECPATH = _G.EXECPATH .."/"
+end
+
+local MoonCake = require(mc)
+
+function Setup(Server,port)
+	CORS.setupServer(Server)
+	--Analytics.setupServer(Server)
+	--Authentication.setupServer(Server)
+	--WebsiteHandle.setupServer(Server,MoonCake)
+
+	Tracker.setupServer(Server)
+
+	Server:start(port,ip)
+end
+
+if isHttps then
+	local ServerHttps = MoonCake:new{
+	    isHttps = true, keyPath = _G.EXECPATH.."zerossl-local/keys"
+	}
+
+	Setup(ServerHttps,porthttps,ip)
+end
+
+Setup(MoonCake:new(),port,ip)
+
+--[[
+
 local CORS = require"ose/CORS"
 local Authentication = require"ose/authent"
 local Analytics = require"ose/analytics"
@@ -50,6 +96,9 @@ Server:start(port,ip)
 
 Analytics.setupTimer()
 
+
+]]
+
 -- git clone https://Oseday:3MicikP7fTvbkDS@github.com/Oseday/Analytics
 -- C:\Users\canca\Desktop\Roblox\Vurse\combined-server\Websites\Analytics
 -- rm -rf Analytics && git clone https://Oseday:3MicikP7fTvbkDS@github.com/Oseday/Analytics
@@ -61,3 +110,4 @@ Analytics.setupTimer()
 -- git clone https://Oseday:3MicikP7fTvbkDS@github.com/Oseday/C-builds
 
 -- cd deps/ose && git pull origin master && cd ../..
+
