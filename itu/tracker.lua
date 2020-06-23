@@ -64,7 +64,7 @@ end
 	--if not direxists(key) then return false,"Key doesn't exists",400 end
 	--return quickio.write(pafix("itu/%s/metadata",key),TableToLoadstringFormat(metadata))
 
-local Users = {testuser=true}
+local Users = {testuser=true,cancakir=true}
 
 local Locations = {
 	["Lokasyon A"] = {checked=true,  username="testuser"},
@@ -146,6 +146,42 @@ function module.setupServer(server)
 		end
 
 		res:send("",200)
+	end)
+
+	server:get("/admin/userlist", function(req, res)
+		local s = "<p>"
+		for k in pairs(Users) do
+			s = s .. k .. " "
+		end
+		s = s .. "</p>"
+		res:send(s,200)
+	end)
+
+	server:get("/admin/locations", function(req, res)
+		local s = "<p>"
+		for k,t in pairs(Locations) do
+			s = s .. k .. ": " .. (t.username=="" and "0" or t.username) .. "\n"
+		end
+		s = s .. "</p>"
+		res:send(s,200)
+	end)
+
+	server:get("/admin/createuser/:username", function(req, res)
+		if Users[req.params.username] then
+			res:send("already an user with this name, go back",200)
+		end
+		Users[req.params.username]=true
+		SaveUsers()
+		res:send("created, go back",200)
+	end)
+
+	server:get("/admin/deleteuser/:username", function(req, res)
+		if not Users[req.params.username] then
+			res:send("no user with this name, go back",200)
+		end
+		Users[req.params.username]=nil
+		SaveUsers()
+		res:send("deleted, go back",200)
 	end)
 
 

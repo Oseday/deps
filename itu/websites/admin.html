@@ -55,22 +55,29 @@
         </style>
     </head>
     <body class="text-center" data-gr-c-s-loaded="true">
-        <form class="form-signin" action="">
-            <h1 class="h3 mb-3 font-weight-normal">Lütfen giriş yapın</h1>
-            <label for="inputUsername" class="sr-only">Kullanıcı adı:</label>
-            <input type="text" id="inputUsername" name="username" class="form-control form-username" placeholder="Kullanıcı adı" required="" autofocus="">
-            <div class="invalid-feedback">Kullanıcı adı bulunamadı</div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Giriş yap</button>
-        </form>
-
+        <div class="col-2"></div>
+        <div class="col-8">
+            <button type="button" id="list" class="btn btn-primary btn-lg btn-block">Kullanıcıları listele</button>
+            <button type="button" id="locations" class="btn btn-primary btn-lg btn-block">Lokasyonları listele</button>
+            <button type="button" id="create" class="btn btn-secondary btn-lg btn-block">Kullanıcı ekle</button>
+            <button type="button" id="delete" class="btn btn-secondary btn-lg btn-block">Kullanıcı çıkar</button>
+        </div>
+        <div class="col-2"></div>
         <script type="text/javascript">
-            $(".form-signin").submit(function(event) {
-                $.post("login", $("#inputUsername")).done( function(data) {
-                    document.location.href = "viewer/" + $("#inputUsername").val();
-                }).fail(function(){
-                    //document.location.href = "viewer/" + $("#inputUsername").val(); // for omar's testing, remove later
-                    $(".form-username").toggleClass("is-invalid", true);
-                })
+            $("#list").submit(function(event) {
+                document.location.href = "/admin/userlist";
+                event.preventDefault();
+            })
+            $("#locations").submit(function(event) {
+                document.location.href = "/admin/locations";
+                event.preventDefault();
+            })
+            $("#create").submit(function(event) {
+                document.location.href = "/admin/createuser";
+                event.preventDefault();
+            })
+            $("#delete").submit(function(event) {
+                document.location.href = "/admin/deleteuser";
                 event.preventDefault();
             })
         </script>
