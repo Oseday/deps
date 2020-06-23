@@ -101,8 +101,14 @@ function module.setupServer(server)
 
 	server:post("/viewer/tabledata", function(req, res)
 		local t = {}
-		for k,v in pairs(Locations) do
-			t[#t+1]={k,v[1],v[2]}
+		for Location,tab in pairs(Locations) do
+
+			local occupancy = tab[2]
+			local isTicked = tab[1]
+
+			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
+
+			t[#t+1]={Location, isTicked, isDisabled}
 		end
 		res:json(t,200)
 	end)
