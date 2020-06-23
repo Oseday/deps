@@ -59,7 +59,11 @@ function makedir(dir)
 	return os.execute("mkdir analytics"..OSS..dir)
 end
 
-function TableToString(t)
+function removedir(dir)
+	return os.execute("rm -rf analytics"..OSS..dir)
+end
+
+function TableToString_OLD(t)
 	local s = "{"
 	for k,v in pairs(t) do
 		if type(k)=="number" then
@@ -69,6 +73,21 @@ function TableToString(t)
 		else
 			local ts = type(v)=="table" and TableToString(v) or v
 			if ts==true then ts="true" elseif ts==false then ts="false" end
+			s=s.."['"..k.."']="..ts..","
+		end
+	end
+	return s.."}"
+end
+
+local function TableToString(t)
+	local s = "{"
+	for k,v in pairs(t) do
+		if type(v)=="string" then v = "[==["..v.."]==]" end
+		local ts = type(v)=="table" and TableToString(v) or v
+		if ts==true then ts="true" elseif ts==false then ts="false" end
+		if type(k)=="number" then
+			s=s.."["..k.."]="..ts..","
+		else
 			s=s.."['"..k.."']="..ts..","
 		end
 	end
@@ -91,7 +110,7 @@ local function updateMetadata(metadata)
 end
 
 function getMetadata(key) --from file
-	if not direxists(key) then return false,"Key doesn't exists",500 end
+	if not direxists(key) then return false,"Key doesn't exists",400 end
 	if Analytics[key] then
 		return updateMetadata(Analytics[key].metadata)
 	else
@@ -100,13 +119,13 @@ function getMetadata(key) --from file
 end
 
 function setMetadata(key,metadata) --to file
-	if not direxists(key) then return false,"Key doesn't exists",500 end
+	if not direxists(key) then return false,"Key doesn't exists",400 end
 	return quickio.write(pafix("analytics/%s/metadata",key),TableToLoadstringFormat(metadata)) --pafix("analytics/%s/metadata",key)
 end
 
 function getKeyToRAM(key)
 	if Analytics[key] then return true,"Already in RAM",300 end
-	if not direxists(key) then return false,"Key isn't valid",500 end
+	if not direxists(key) then return false,"Key isn't valid",400 end
 
 	local metadata = getMetadata(key)
 
@@ -115,8 +134,8 @@ function getKeyToRAM(key)
 end
 
 function saveKey(key)
-	if not Analytics[key] then return false,"Key doesn't exists",500 end
-	if not direxists(key) then return false,"Key isn't valid",500 end
+	if not Analytics[key] then return false,"Key doesn't exists",400 end
+	if not direxists(key) then return false,"Key isn't valid",400 end
 
 	do local s,n,e = setMetadata(key,Analytics[key].metadata) if not s then return s,n,e end end --Save metadata
 
@@ -134,6 +153,28 @@ function saveKey(key)
 end
 
 local close = false
+
+
+function module.removeKey(key)
+	if close then return false,"Server is closing",503 end
+	if type(key)~="string" then return false,"Key is not a string",400 end
+	if string.len(key)<10 then return false,"Key can't be less than 10 characters",400 end
+
+	local dire = direxists(key)
+
+	if not Analytics[key] or not dire then return false,"Key doesn't exists",400 end
+
+	print("removedir",removedir(key))
+
+	for sub in pairs(Analytics[key].subs) do
+		local usermeta = auth.getUserMetadata(sub)
+		usermeta.keys[key]=nil
+		auth.setUserMetadata(sub,usermeta)
+	end
+
+
+	Analytics[key] = nil
+end
 
 function module.createKey(key,sub,usermeta,specifics)
 	if close then return false,"Server is closing",503 end
@@ -161,6 +202,7 @@ function module.createKey(key,sub,usermeta,specifics)
 	do local s,n,e = setMetadata(key,metadata) if not s then return s,n,e end end --Save metadata of key
 
 	--local usermeta = auth.getUserMetadata(sub) --Get the metadata of the user who created the key and save it
+	p(sub)
 	usermeta.keys[key]=true
 	auth.setUserMetadata(sub,usermeta)
 
@@ -326,7 +368,6 @@ function module.setupTimer()
 end
 
 
-
 function module.setupServer(server)
 	if not server then return end--for debugging
 
@@ -340,9 +381,10 @@ function module.setupServer(server)
 		if not metadata.subs[sub] then return true,res:send("No access to key",401) end
 	end
 
-	server:get("/analytics/getMetadata", function(req, res)
+	server:post("/analytics/getMetadata", function(req, res)
 		coroutine.wrap(function()
 			local key = req.body.key
+			if not key then return res:send("Key can't be nil",400) end
 			if tonumber(key) then return res:send("Key needs to be a string",400) end
 			print("Get key",key)
 
@@ -350,17 +392,18 @@ function module.setupServer(server)
 
 			if CheckAccessSubKey(res,token,key) then return end
 
-			local metadata = Analytics[key].metadata
-			
+			local metadata,n,e = getMetadata(key)
+			if not metadata then return true,res:send(n,e) end
+
 			res:json(metadata,200)
 		end)()
 	end)
 
-	server:get("/analytics/createKey", function(req, res)
+	server:post("/analytics/createKey", function(req, res)
 		coroutine.wrap(function()
 			local key = req.body.key
 			if tonumber(key) then return res:send("Key needs to be a string",400) end
-			if string.len(key)<10 then return res:send("Key length can't be less than 5",400) end
+			if string.len(key)<10 then return res:send("Key length can't be less than 10",400) end
 
 			local token = auth.GetToken(req)--req.body.token or req.headers.token or req.cookies.token
 
@@ -377,10 +420,31 @@ function module.setupServer(server)
 		end)()
 	end)
 
-	local function fieldcheck(res,key,DataField,value)
+	server:post("/analytics/deleteKey", function(req, res)
+		coroutine.wrap(function()
+			local key = req.body.key
+			if tonumber(key) then return res:send("Key needs to be a string",400) end
+			if string.len(key)<10 then return res:send("Key length can't be less than 10",400) end
+
+			local token = auth.GetToken(req)--req.body.token or req.headers.token or req.cookies.token
+
+			local sub,n,e = auth.tokenLoggedin(token)
+			if not sub then return res:send(n,e) end
+
+			local usermeta = auth.getUserMetadata(sub)
+			if not usermeta then return res:send("No user metadata found",500) end
+
+			local s,n,e = module.deleteKey(key)
+			if not s then res:send(n,e) end
+
+			res:json(n,e)
+		end)()
+	end)
+
+	local function fieldcheck(res,key,DataField,amount)
 		if not key then return true,res:send("No key given",400) end
 		if tonumber(key) or type(key)~="string" then return true,res:send("Key needs to be a string",400) end
-		if string.len(key)<5 then return true,res:send("Key length can't be less than 5",400) end
+		if string.len(key)<10 then return true,res:send("Key length can't be less than 10",400) end
 
 		if not DataField then return true,res:send("No DataField given",400) end
 		if tonumber(DataField) or type(DataField)~="string" then return true,res:send("DataField needs to be a string",400) end
@@ -414,9 +478,9 @@ function module.setupServer(server)
 		coroutine.wrap(function()
 			local key = req.body.key
 			local DataField = req.body.DataField
-			local amount = req.body.amount
+			local times = req.body.times
 
-			if fieldcheck(res,key,DataField,amount) then return end
+			if fieldcheck(res,key,DataField,times) then return end
 
 			times = math.floor(times)
 			if times<1 then return res:send("Times can't be less than 1",400) end

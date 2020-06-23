@@ -9,7 +9,7 @@ local timer = require"timer"
 
 print("EXECPATH:",_G.EXECPATH)
 
-function module.setupServer(Server)
+function module.setupServer(Server,MoonCake)
 	local MeridianDir = _G.EXECPATH .. "Websites/nevs/Meridian"
 	local AnalyticsDir = _G.EXECPATH .. "Websites/Analytics"
 
@@ -45,6 +45,8 @@ function module.setupServer(Server)
 		end)()
 	end)
 
+
+
 	--Server:get("/",function(req, res) res:sendFile(MeridianDir.."/home.html") end)
 	Server:get("/",function(req, res) res:sendFile(AnalyticsDir.."/build/index.html") end)
 
@@ -59,6 +61,18 @@ function module.setupServer(Server)
 		local t = StaticFS.use(req, res)
 		if t then next() end
 	end)
+	
+	MoonCake.notFound = function(req, res, err)
+	    if(err) then
+	        MoonCake.serverError(req, res, err)
+	    else
+	        --p("404 - Not Found!")
+	        --res:status(404):render("./libs/template/404.html")
+	        res:sendFile(AnalyticsDir.."/build/index.html")
+	    end
+	end
+
+
 end
 
 return module
