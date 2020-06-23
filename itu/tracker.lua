@@ -104,11 +104,11 @@ function module.setupServer(server)
 		for Location,tab in pairs(Locations) do
 
 			local occupancy = tab[2]
-			local isTicked = tab[1]
+			local isChecked = tab[1]
 
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
-			t[#t+1]={Location, isTicked, isDisabled}
+			t[#t+1]={Location, isChecked, isDisabled}
 		end
 		res:json(t,200)
 	end)

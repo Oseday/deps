@@ -65,13 +65,13 @@
             function UpdateForm(data){
                 for(let [rowId, rowData] of Object.entries(data)){
                     let locationName = rowData[0]
-                    let isTicked = rowData[1]
-                    let isEnabled = rowData[2]
-                    console.log(locationName, isTicked, isEnabled)
+                    let isChecked = rowData[1]
+                    let isDisabled = rowData[2]
+                    console.log(locationName, isChecked, isDisabled)
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
                             ${locationName}
-                            <input type="checkbox" name="${locationName}" aria-label="Something" ${(isEnabled ? "" : " disabled")} ${(isTicked ? " checked" : "")}>
+                            <input type="checkbox" name="${locationName}" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>
                         </li>`
                     )
                 }
