@@ -9,10 +9,10 @@
         <title>VerBiPati Denetim Sayfası</title>
 
         <!-- Bootstrap core CSS -->
-        <link href="/bootstrap.min.css" rel="stylesheet">
+        <link href="bootstrap.min.css" rel="stylesheet">
 
         <meta name="theme-color" content="#563d7c">
-        <script src="/jquery.js" type="text/javascript"></script>
+        <script src="jquery.js" type="text/javascript"></script>
 
         <style>
             html,
@@ -44,6 +44,12 @@
                         <div class="row">
                             <div class="col-12">
                                 <ul class="list-group" id="myLocations">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                            <label class="form-check-label" for="defaultCheck1"> asd </label>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="col-12">&af;</div>
@@ -55,50 +61,5 @@
                 </div>
             </div>
         </div>
-        <script type="text/javascript">
-            let usernameArray = window.location.href.split("/")
-            let username = usernameArray[usernameArray.length-1] //window.location.href.split("?username=")[1]
-            $("#myLocations").append(`<input type="text" name="username" value="${username}" hidden>`)
-
-            $("#greet").html("Hoşgeldin " + username)
-
-            function UpdateForm(data){
-                for(let [rowId, rowData] of Object.entries(data)){
-                    let locationName = rowData[0]
-                    let isChecked = rowData[1]
-                    let isDisabled = rowData[2]
-                    console.log(locationName, isChecked, isDisabled)
-                    $("#myLocations").append(
-                        `<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
-                            ${locationName}
-                            <input type="checkbox" name="${locationName}" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>
-                        </li>`
-                    )
-                }
-            }
-
-            $(".list-group-item").click(function(){
-                var checkbox = $(this).find("input[type=checkbox]");
-                if(!checkbox.prop("disabled")){
-                    checkbox.prop("checked", !checkbox.prop("checked"))
-                }
-            })
-
-            $.post("tabledata", {username: username}).done(function(data) {
-                UpdateForm(data)
-            }).fail(function(){
-                document.location.href = "index"
-            })
-
-            $(".MyForm").submit(function(event) {
-                let formData = $(".MyForm").serializeArray();
-
-                $.post("tablesubmit", formData).done(function() {
-                    $(".alert").show();
-                })
-
-                event.preventDefault()
-            })
-        </script>
     </body>
 </html>
