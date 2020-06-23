@@ -90,7 +90,7 @@ end
 function module.setupServer(server)
 
 	server:post("/login", function(req, res)
-		local username = req.body
+		local username = req.body.username
 		p(username)
 		if Users[username] then
 			res:send("",200)
