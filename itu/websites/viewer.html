@@ -36,7 +36,7 @@
         <div class="container">
             <h2 class="text-center" id="greet">Viewer table</h2>
             <div class="row justify-content-md-center">
-                <div class="col-4">
+                <div class="col" align="center">
                     <div class="alert alert-success" role="alert" style="display: none;">
                         Başarılı şekilde güncellendi!
                       </div>
@@ -76,8 +76,6 @@
                     )
                 }
             }
-             
-            //${(isEnabled ? "" : "disabled checked")}>
 
             $.post("tabledata", {username: username}).done(function(data) {
                 UpdateForm(data)
