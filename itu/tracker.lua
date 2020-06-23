@@ -99,7 +99,7 @@ function module.setupServer(server)
 		end
 	end)
 
-	server:post("/tabledata", function(req, res)
+	server:post("/viewer/tabledata", function(req, res)
 		local t = {}
 		for k,v in pairs(Locations) do
 			t[#t+1]={k,v[1],v[2]}
