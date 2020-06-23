@@ -95,7 +95,7 @@ function module.setupServer(server)
 		if Users[username] then
 			res:send("",200)
 		else
-			res:send("",300)
+			res:send("",400)
 		end
 	end)
 
@@ -111,7 +111,11 @@ function module.setupServer(server)
 		local body = req.body
 
 		local username = body.username
-		print(username)
+		p(username)
+
+		if not Users[username] then
+			res:send("",400)
+		end
 
 		body.username = nil
 
@@ -121,6 +125,7 @@ function module.setupServer(server)
 
 		res:send("",200)
 	end)
+
 
 	--[[server:get("/viewer/:username", function(req, res)
 		local username = req.params.username
