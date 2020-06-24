@@ -235,13 +235,24 @@ function module.setupServer(server)
 		res:send("created, go back",200)
 	end)
 
-	server:post("/admin/deletelocation", function(req, res)
-		if not Locations[req.body.username] then
-			res:send("no locations with this name, go back",400)
+	local function deletelocation(location)
+		if not Locations[location] then
+			return "no locations with this name, go back",400
 		end
-		Locations[req.body.username]=nil
+		Locations[location]=nil
 		SaveTable(Locations,"locations")
-		res:send("deleted, go back",200)
+		return "deleted, go back",200
+	end
+
+	server:post("/admin/deletelocation", function(req, res)
+		res:send(deletelocation(req.body.location))
+	end)
+
+	server:post("/admin/bulkdeletelocations", function(req, res)
+		for location in pairs(req.body) do
+			deletelocation(location)
+		end
+		res:send("deleted",200)
 	end)
 end
 

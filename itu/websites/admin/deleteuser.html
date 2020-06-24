@@ -84,19 +84,20 @@
                 })
             }
 
-
-            $.get("/admin/userdata").done(function(data) {
-                UpdateForm(data)
-            }).fail(function(){
-                document.location.href = "index"
-            })
+            function CompleteUpdate(){
+                $.get("/admin/userdata").done(function(data) {
+                    UpdateForm(data)
+                }).fail(function(){
+                    document.location.href = "/admin"
+                })
+            }
 
             $(".MyForm").submit(function(event) {
                 let formData = $(".MyForm").serializeArray();
 
                 $.post("/admin/bulkdeleteusers", formData).done(function() {
                     $(".alert").show();
-                    location.relaod();
+                    CompleteUpdate();
                 })
 
                 event.preventDefault()
