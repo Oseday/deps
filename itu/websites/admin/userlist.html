@@ -38,9 +38,6 @@
             <h2 class="text-center" id="greet">Viewer table</h2>
             <div class="row justify-content-md-center">
                 <div class="col" align="center">
-                    <div class="alert alert-success" role="alert" style="display: none;">
-                        Başarılı şekilde güncellendi!
-                    </div>
                     <form action="" method="GET" class="MyForm">
                         <div class="row">
                             <div class="col-12">
@@ -48,9 +45,7 @@
                                 </ul>
                             </div>
                             <div class="col-12">&af;</div>
-                            <div class="col-12">
-                                <button class="btn btn-lg btn-primary btn-block" type="submit">Çıkar</button>
-                            </div>
+                            <div class="col-12"></div>
                         </div>
                     </form>
                 </div>
@@ -62,26 +57,19 @@
             //let username = usernameArray[usernameArray.length-1] //window.location.href.split("?username=")[1]
             //$("#myLocations").append(`<input type="text" name="username" value="${username}" hidden>`)
 
-            $("#greet").html("Lokasyon çıkar:")
+            $("#greet").html("Kullanıcı listesi:")
 
             function UpdateForm(data){
                 //delete inside $("#myLocations")
                 for(let [rowId, rowData] of Object.entries(data)){
-                    let location = rowData[0];
+                    let username = rowData[0];
+                    let fullname = rowData[0];
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
-                            ${location} 
-                            <input type="checkbox" name="${location}" aria-label="Something">
+                            ${username} (${fullname})
                         </li>`
                     )
                 }
-                
-                $(".list-group-item").click(function(){
-                    var checkbox = $(this).find("input[type=checkbox]");
-                    if(!checkbox.prop("disabled")){
-                        checkbox.prop("checked", !checkbox.prop("checked"))
-                    }
-                })
             }
 
             function CompleteUpdate(){
@@ -94,16 +82,6 @@
 
             CompleteUpdate();
 
-            $(".MyForm").submit(function(event) {
-                let formData = $(".MyForm").serializeArray();
-
-                $.post("/admin/bulkdeletelocations", formData).done(function() {
-                    $(".alert").show();
-                    CompleteUpdate();
-                })
-
-                event.preventDefault()
-            })
         </script>
     </body>
 </html>

@@ -172,7 +172,7 @@ function module.setupServer(server)
 	server:get("/admin/locations", function(req, res)
 		local s = "<p>"
 		for k,t in pairs(Locations) do
-			s = s .. k .. ": " .. (t.username=="" and "0" or t.username) .. "<br>"
+			s = s .. k .. ": " .. (t.username=="" and "0" or (t.username .."("..Users[t.username].fullname..")" ) .. "<br>"
 		end
 		s = s .. "</p>"
 		res:send(s,200)
