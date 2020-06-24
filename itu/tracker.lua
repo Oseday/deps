@@ -67,8 +67,8 @@ end
 local Users = {testuser={fullname="Test User"},cancakir={fullname="Can Çakır"}}
 
 local Locations = {
-	["Lokasyon A"] = {checked=true,  username="testuser", date="", pos={latitude=0,longitude=0}},
-	["Lokasyon B"] = {checked=true,  username="cancakir", date="", pos={latitude=0,longitude=0}},
+	["Lokasyon A"] = {checked=true,  username="testuser", date="00:00", pos={latitude=0,longitude=0}},
+	["Lokasyon B"] = {checked=true,  username="cancakir", date="00:00", pos={latitude=0,longitude=0}},
 	["Lokasyon C"] = {checked=false, username="", date="", pos={latitude=0,longitude=0}},
 	["Lokasyon D"] = {checked=false, username="", date="", pos={latitude=0,longitude=0}},
 }
@@ -267,7 +267,7 @@ function module.setupServer(server)
 		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
 		end
-		Locations[req.body.location]={checked=false, username="", date="", pos=req.body.pos}
+		Locations[req.body.location]={checked=false, username="", date="", pos={latitude=tonumber(req.body.pos.latitude),longitude=tonumber(req.body.pos.longitude)}}
 		SaveTable(Locations,"locations")
 		res:send("created, go back",200)
 	end)

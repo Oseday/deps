@@ -72,7 +72,7 @@
                     console.log(locationName, isChecked, isDisabled)
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex align-items-center list-group-item-dark">
-                            ${locationName}${(isChecked ? "<i><small>   ("+occupancy+") "+datef+"</small></i>" : "")}
+                            <d>${locationName}${(isChecked ? "<i><small>   ("+occupancy+") "+datef+"</small></i>" : "")}</d>
                             <input type="checkbox" name="${locationName}" class="ml-auto" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>
                         </li>`
                     )
@@ -84,7 +84,7 @@
                         checkbox.prop("checked", !checkbox.prop("checked"))
                     }
                 })
-                
+
                 $(".ml-auto").click(function(){
                     var checkbox = $(this).find("input[type=checkbox]");
                     if(!checkbox.prop("disabled")){
