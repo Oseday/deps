@@ -98,10 +98,13 @@
 
                 let posttab = {
                     data: formData,
-                    pos: {latitude: pos.coords.latitude, longitude: pos.coords.longitude}
+                    pos: {
+                        latitude: pos.coords.latitude, 
+                        longitude: pos.coords.longitude
+                    }
                 }
 
-                $.post("tablesubmit", posttab).done(function() {
+                $.post("tablesubmit", JSON.stringify(posttab)).done(function() {
                     $(".alert").show();
                 })
             }
