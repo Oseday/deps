@@ -158,6 +158,7 @@ function module.setupServer(server)
 		res:send("",200)
 	end)
 
+	--[[
 	server:get("/admin/userlist", function(req, res)
 		local s = "<p>"
 		for k in pairs(Users) do
@@ -166,6 +167,7 @@ function module.setupServer(server)
 		s = s .. "</p>"
 		res:send(s,200)
 	end)
+	]]
 
 	server:get("/admin/locations", function(req, res)
 		local s = "<p>"
@@ -243,6 +245,14 @@ function module.setupServer(server)
 		SaveTable(Locations,"locations")
 		return "deleted, go back",200
 	end
+
+	server:get("/admin/locationdata", function(req, res)
+		local t = {}
+		for k,v in pairs(Locations) do
+			t[#t+1] = {k}
+		end
+		res:json(t,200)
+	end)
 
 	server:post("/admin/deletelocation", function(req, res)
 		res:send(deletelocation(req.body.location))
