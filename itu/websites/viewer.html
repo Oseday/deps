@@ -68,10 +68,11 @@
                     let isChecked = rowData[1]
                     let isDisabled = rowData[2]
                     let occupancy = rowData[3]
+                    let datef = rowData[4]
                     console.log(locationName, isChecked, isDisabled)
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
-                            ${locationName} ${(isChecked ? "("+occupancy+")" : "")}
+                            ${locationName} ${(isChecked ? "<i><small>("+occupancy+") "+datef+"</small></i>" : "")}
                             <input type="checkbox" name="${locationName}" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>
                         </li>`
                     )
