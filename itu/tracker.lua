@@ -142,7 +142,7 @@ function module.setupServer(server)
 			for i,v in pairs(dataT) do
 				if v.name == "username" then
 					username = v.value
-					data[i]=nil
+					dataT[i]=nil
 				end	
 			end
 		end
