@@ -61,7 +61,7 @@
             <input type="text" id="inputUsername" name="username" class="form-control form-username" placeholder="Kullanıcı adı" required="" autofocus="">
             <label for="inputFullname" class="sr-only">Full adı:</label>
             <input type="text" id="inputFullname" name="fullname" class="form-control form-username" placeholder="Full adı" required="" autofocus="">
-            <div class="invalid-feedback">Kullanıcı adı zaten var</div>
+            <div class="invalid-feedback">Bu kullanıcı adı zaten var</div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Ekle</button>
         </form>
 
@@ -69,7 +69,9 @@
             $(".form-signin").submit(function(event) {
                 //document.location.href = "/admin/createuser/" + $("#inputUsername").val();
 
-                $.post("/admin/createuser", $("#inputUsername")).done( function(data) {
+                let posttab = {username: $("#inputUsername").val(), fullname: $("#inputFullname").val()}
+
+                $.post("/admin/createuser", posttab).done( function(data) {
                     document.location.href = "/admin";
                 }).fail(function(){
                     $(".form-username").toggleClass("is-invalid", true);
