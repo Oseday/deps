@@ -243,10 +243,10 @@ function module.setupServer(server)
 
 	server:post("/admin/createlocation", function(req, res)
 		p(req.body)
+		p(req.body.pos)
 		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
 		end
-		p(req.body.pos)
 		Locations[req.body.location]={checked=false, username="", date="", pos=req.body.pos}
 		SaveTable(Locations,"locations")
 		res:send("created, go back",200)
