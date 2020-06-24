@@ -122,7 +122,7 @@ function module.setupServer(server)
 
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
-			t[#t+1]={Location, isChecked, isDisabled}
+			t[#t+1]={Location, isChecked, isDisabled, Users[occupancy].fullname}
 		end
 		res:json(t,200)
 	end)
@@ -169,6 +169,7 @@ function module.setupServer(server)
 	end)
 	]]
 
+	--[[
 	server:get("/admin/locations", function(req, res)
 		local s = "<p>"
 		for k,t in pairs(Locations) do
@@ -177,6 +178,7 @@ function module.setupServer(server)
 		s = s .. "</p>"
 		res:send(s,200)
 	end)
+	]]
 
 
 	server:get("/admin/userdata", function(req, res)

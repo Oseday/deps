@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
-        <title>VerBiPati Denetim</title>
+        <title>VBP Admin - Lokasyonlar</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/bootstrap.min.css" rel="stylesheet">
@@ -33,13 +33,11 @@
         </style>
     </head>
     <body class="text-center" data-gr-c-s-loaded="true">
+
         <div class="container">
             <h2 class="text-center" id="greet">Viewer table</h2>
             <div class="row justify-content-md-center">
                 <div class="col" align="center">
-                    <div class="alert alert-success" role="alert" style="display: none;">
-                        Başarılı şekilde güncellendi!
-                      </div>
                     <form action="" method="GET" class="MyForm">
                         <div class="row">
                             <div class="col-12">
@@ -47,60 +45,44 @@
                                 </ul>
                             </div>
                             <div class="col-12">&af;</div>
-                            <div class="col-12">
-                                <button class="btn btn-lg btn-primary btn-block" type="submit">Kaydet</button>
-                            </div>
+                            <div class="col-12"></div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <script type="text/javascript">
-            let usernameArray = window.location.href.split("/")
-            let username = usernameArray[usernameArray.length-1] //window.location.href.split("?username=")[1]
-            $("#myLocations").append(`<input type="text" name="username" value="${username}" hidden>`)
 
-            $("#greet").html("Beslediğiniz bölgeleri seçiniz:")
+        <script type="text/javascript">
+            //let usernameArray = window.location.href.split("/")
+            //let username = usernameArray[usernameArray.length-1] //window.location.href.split("?username=")[1]
+            //$("#myLocations").append(`<input type="text" name="username" value="${username}" hidden>`)
+
+            $("#greet").html("Lokasyon listesi:")
 
             function UpdateForm(data){
+                //delete inside $("#myLocations")
                 for(let [rowId, rowData] of Object.entries(data)){
-                    let locationName = rowData[0]
-                    let isChecked = rowData[1]
-                    let isDisabled = rowData[2]
-                    let occupancy = rowData[3]
-                    console.log(locationName, isChecked, isDisabled)
+                    let location = rowData[0];
+                    let username = rowData[1];
+                    let fullname = rowData[2];
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
-                            ${locationName} ${(isChecked ? "("+occupancy+")" : "")}
-                            <input type="checkbox" name="${locationName}" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>
+                            ${location}: ${username} (${fullname})
                         </li>`
                     )
                 }
-                
-                $(".list-group-item").click(function(){
-                    var checkbox = $(this).find("input[type=checkbox]");
-                    if(!checkbox.prop("disabled")){
-                        checkbox.prop("checked", !checkbox.prop("checked"))
-                    }
+            }
+
+            function CompleteUpdate(){
+                $.get("/admin/locationdata").done(function(data) {
+                    UpdateForm(data)
+                }).fail(function(){
+                    document.location.href = "/admin"
                 })
             }
 
+            CompleteUpdate();
 
-            $.post("tabledata", {username: username}).done(function(data) {
-                UpdateForm(data)
-            }).fail(function(){
-                document.location.href = "index"
-            })
-
-            $(".MyForm").submit(function(event) {
-                let formData = $(".MyForm").serializeArray();
-
-                $.post("tablesubmit", formData).done(function() {
-                    $(".alert").show();
-                })
-
-                event.preventDefault()
-            })
         </script>
     </body>
 </html>
