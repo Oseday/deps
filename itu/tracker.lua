@@ -146,6 +146,7 @@ function module.setupServer(server)
 				if tab.username == ""  then
 					Locations[loc].username = username
 					Locations[loc].checked = true
+					print(os.date("%H:%M", os.time()+60*60))
 					Locations[loc].date = os.date("%H:%M", os.time()+60*60)
 				end
 			else
