@@ -67,10 +67,10 @@ end
 local Users = {testuser={fullname="Test User"},cancakir={fullname="Can Çakır"}}
 
 local Locations = {
-	["Lokasyon A"] = {checked=true,  username="testuser"},
-	["Lokasyon B"] = {checked=true,  username="cancakir"},
-	["Lokasyon C"] = {checked=false, username=""},
-	["Lokasyon D"] = {checked=false, username=""},
+	["Lokasyon A"] = {checked=true,  username="testuser", date=""},
+	["Lokasyon B"] = {checked=true,  username="cancakir", date=""},
+	["Lokasyon C"] = {checked=false, username="", date=""},
+	["Lokasyon D"] = {checked=false, username="", date=""},
 }
 
 
@@ -146,11 +146,13 @@ function module.setupServer(server)
 				if tab.username == ""  then
 					Locations[loc].username = username
 					Locations[loc].checked = true
+					Locations[loc].date = os.date("%H:%M", os.time()+60*60)
 				end
 			else
 				if tab.checked and tab.username == username then
 					Locations[loc].username = ""
 					Locations[loc].checked = false
+					Locations[loc].date = ""
 				end
 			end
 		end
@@ -233,7 +235,7 @@ function module.setupServer(server)
 
 	server:get("/admin/resetalllocations", function(req, res)
 		for k,v in pairs(Locations) do
-			Locations[k] = {checked=false, username=""}
+			Locations[k] = {checked=false, username="", date=""}
 		end
 		SaveTable(Locations,"locations")
 		res:send("Locations reset, go back",200)
