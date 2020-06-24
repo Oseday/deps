@@ -132,7 +132,7 @@ function module.setupServer(server)
 
 		print(next(req.body))
 
-		req.body = json.parse(next(req.body))
+		req.body = json.parse((next(req.body)))
 
 		local dataT = req.body.data
 		local pos = req.body.pos
@@ -263,7 +263,7 @@ function module.setupServer(server)
 	server:post("/admin/createlocation", function(req, res)
 		p(req.body)
 		p(req.body.pos)
-		req.body = json.parse(next(req.body))
+		req.body = json.parse((next(req.body)))
 		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
 		end
