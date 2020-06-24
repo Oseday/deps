@@ -181,8 +181,17 @@ function module.setupServer(server)
 
 	server:get("/admin/userdata", function(req, res)
 		local t = {}
-		for k,v in pairs(Users) do
-			t[#t+1] = {k,v.fullname}
+		for username,v in pairs(Users) do
+
+			local owned = ""
+			for loc,ltab in pairs(Locations) do
+				if ltab.username == username then
+					owned = owned .. loc .. ", " 
+				end
+			end
+			owned = owned:sub(1,-3)
+
+			t[#t+1] = {username, v.fullname, owned}
 		end
 		res:json(t,200)
 	end)
