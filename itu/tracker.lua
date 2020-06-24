@@ -242,6 +242,7 @@ function module.setupServer(server)
 	end)
 
 	server:post("/admin/createlocation", function(req, res)
+		p(req.body)
 		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
 		end
