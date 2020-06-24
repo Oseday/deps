@@ -71,7 +71,7 @@
 
                 let posttab = {username: $("#inputUsername").val(), fullname: $("#inputFullname").val()}
 
-                $.post("/admin/createuser", posttab).done( function(data) {
+                $.post("/admin/createuser", JSON.stringify(posttab)).done( function(data) {
                     document.location.href = "/admin";
                 }).fail(function(){
                     $(".form-username").toggleClass("is-invalid", true);
