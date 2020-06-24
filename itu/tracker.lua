@@ -64,7 +64,7 @@ end
 	--if not direxists(key) then return false,"Key doesn't exists",400 end
 	--return quickio.write(pafix("itu/%s/metadata",key),TableToLoadstringFormat(metadata))
 
-local Users = {testuser=true,cancakir=true}
+local Users = {testuser={fullname="Test User"},cancakir={fullname="Can Çakır"}}
 
 local Locations = {
 	["Lokasyon A"] = {checked=true,  username="testuser"},
@@ -73,32 +73,29 @@ local Locations = {
 	["Lokasyon D"] = {checked=false, username=""},
 }
 
-function SaveUsers()
-	local f,w = quickio.write(pafix("itu/users"), TableToLoadstringFormat(Users))
-	if not f then print("ERROR: Couldn't save users:", w) end
+
+
+function SaveTable(tab,path)
+	local f,w = quickio.write(pafix("itu/"..path), TableToLoadstringFormat(tab))
+	if not f then print("ERROR: Couldn't save "..path..":", w) end
 end
 
-function SaveLocations()
-	local f,w = quickio.write(pafix("itu/locations"), TableToLoadstringFormat(Locations))
-	if not f then print("ERROR: Couldn't save locations:", w) end
+function LoadTable(tab,path)
+	local f,w = quickio.read(pafix("itu/"..path))
+	if f then
+		local temp = loadstring(f)()
+		for k,v in pairs(temp) do
+			tab[k]=v
+		end
+	else
+		print("Error opening itu/"..path..":", w)
+		SaveTable(tab,path)
+	end
 end
 
 do --Server start read users and locations
-	local f,w = quickio.read(pafix("itu/users"))
-	if f then
-		Users = loadstring(f)()
-	else
-		print("Error opening itu/users:", w)
-		SaveUsers()
-	end
-
-	local f,w = quickio.read(pafix("itu/locations"))
-	if f then
-		Locations = loadstring(f)()
-	else
-		print("Error opening itu/locations:", w)
-		SaveUsers()
-	end
+	LoadTable(Users,"users")
+	LoadTable(Locations,"locations")
 end
 
 function module.setupServer(server)
@@ -179,26 +176,44 @@ function module.setupServer(server)
 		res:send(s,200)
 	end)
 
+
+	server:get("/admin/userdata", function(req, res)
+		local t = {}
+		for k,v in pairs(Users) do
+			t[#t+1] = {k,v.fullname}
+		end
+		res:json(t,200)
+	end)
+
 	server:post("/admin/createuser", function(req, res)
 		p(req.body.username)
 		if Users[req.body.username] then
 			res:send("already an user with this name, go back",400)
 		end
-		Users[req.body.username]=true
+		Users[req.body.username]={fullname=req.body.fullname}
 		p("created")
-		SaveUsers()
+		SaveTable(Users,"users")
 		res:send("created, go back",200)
 	end)
 
-	server:post("/admin/deleteuser", function(req, res)
-		p(req.body.username)
-		if not Users[req.body.username] then
-			res:send("no user with this name, go back",400)
+	local function deleteuser(username)
+		if not Users[username] then
+			return "no user with this name, go back",400
 		end
-		Users[req.body.username]=nil
-		p("deleted")
-		SaveUsers()
-		res:send("deleted, go back",200)
+		Users[username]=nil
+		SaveTable(Users,"users")
+		return "deleted, go back",200
+	end
+
+	server:post("/admin/deleteuser", function(req, res)
+		res:send(deleteuser(req.body.username))
+	end)
+
+	server:post("/admin/bulkdeleteusers", function(req, res)
+		for username in pairs(req.body) do
+			deleteuser(username)
+		end
+		res:send("deleted",200)
 	end)
 
 
@@ -207,7 +222,7 @@ function module.setupServer(server)
 		for k,v in pairs(Locations) do
 			Locations[k] = {checked=false, username=""}
 		end
-		SaveLocations()
+		SaveTable(Locations,"locations")
 		res:send("Locations reset, go back",200)
 	end)
 
@@ -216,7 +231,7 @@ function module.setupServer(server)
 			res:send("already a location with this name, go back",400)
 		end
 		Locations[req.body.username]={checked=false, username=""}
-		SaveLocations()
+		SaveTable(Locations,"locations")
 		res:send("created, go back",200)
 	end)
 
@@ -225,7 +240,7 @@ function module.setupServer(server)
 			res:send("no locations with this name, go back",400)
 		end
 		Locations[req.body.username]=nil
-		SaveLocations()
+		SaveTable(Locations,"locations")
 		res:send("deleted, go back",200)
 	end)
 end
