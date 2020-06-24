@@ -130,10 +130,25 @@ function module.setupServer(server)
 	server:post("/viewer/tablesubmit", function(req, res)
 		p(req.body)
 
-		local data = req.body.data
+		req.body = json.parse(req.body)
+
+		local dataT = req.body.data
 		local pos = req.body.pos
 
-		local username = data.username
+		local username
+		do
+			for i,v in pairs(dataT) do
+				if v.name == "username" then
+					username = v.value
+					data[i]=nil
+				end	
+			end
+		end
+
+		local data = {}
+		for i,v in pairs(dataT) do
+			data[v.name]=v.value
+		end
 
 		if not Users[username] then
 			res:send("",400)
@@ -246,6 +261,7 @@ function module.setupServer(server)
 	server:post("/admin/createlocation", function(req, res)
 		p(req.body)
 		p(req.body.pos)
+		req.body = json.parse(req.body)
 		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
 		end
