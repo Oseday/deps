@@ -73,7 +73,7 @@
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex align-items-center list-group-item-dark">
                             ${locationName} ${(isChecked ? "<i><small>("+occupancy+") "+datef+"</small></i>" : "")}
-                            <input type="checkbox" name="${locationName}" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>
+                            <input type="checkbox" name="${locationName}" class="ml-auto" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>
                         </li>`
                     )
                 }
@@ -86,20 +86,36 @@
                 })
             }
 
-
             $.post("tabledata", {username: username}).done(function(data) {
                 UpdateForm(data)
             }).fail(function(){
                 document.location.href = "index"
             })
 
-            $(".MyForm").submit(function(event) {
+
+            function submitRequest(pos){
                 let formData = $(".MyForm").serializeArray();
 
-                $.post("tablesubmit", formData).done(function() {
+                let posttab = {
+                    data: formdata,
+                    pos: {latitude: pos.coords.latitude, longitude: pos.coords.longitude}
+                }
+
+                $.post("tablesubmit", posttab).done(function() {
                     $(".alert").show();
                 })
+            }
 
+            function sendForm(){
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(submitRequest);
+                } else {
+                    submitRequest({coords:{latitude:0,longitude:0}})
+                }
+            }
+
+            $(".MyForm").submit(function(event) {
+                sendForm()
                 event.preventDefault()
             })
         </script>

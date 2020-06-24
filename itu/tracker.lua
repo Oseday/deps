@@ -67,10 +67,10 @@ end
 local Users = {testuser={fullname="Test User"},cancakir={fullname="Can Çakır"}}
 
 local Locations = {
-	["Lokasyon A"] = {checked=true,  username="testuser", date=""},
-	["Lokasyon B"] = {checked=true,  username="cancakir", date=""},
-	["Lokasyon C"] = {checked=false, username="", date=""},
-	["Lokasyon D"] = {checked=false, username="", date=""},
+	["Lokasyon A"] = {checked=true,  username="testuser", date="", pos={latitude=0,longitude=0}},
+	["Lokasyon B"] = {checked=true,  username="cancakir", date="", pos={latitude=0,longitude=0}},
+	["Lokasyon C"] = {checked=false, username="", date="", pos={latitude=0,longitude=0}},
+	["Lokasyon D"] = {checked=false, username="", date="", pos={latitude=0,longitude=0}},
 }
 
 
@@ -128,31 +128,31 @@ function module.setupServer(server)
 	end)
 
 	server:post("/viewer/tablesubmit", function(req, res)
-		local body = req.body
+		local data = req.body.data
+		local pos = req.body.pos
 
-		local username = body.username
-		p(username)
+		local username = data.username
 
 		if not Users[username] then
 			res:send("",400)
 		end
 
-		body.username = nil
-
-		p(body)
+		data.username = nil
 
 		for loc,tab in pairs(Locations) do
-			if body[loc] then
+			if data[loc] then
 				if tab.username == ""  then
 					Locations[loc].username = username
 					Locations[loc].checked = true
 					Locations[loc].date = os.date("%H:%M", os.time()+3*60*60)
+					Locations[loc].pos = pos
 				end
 			else
 				if tab.checked and tab.username == username then
 					Locations[loc].username = ""
 					Locations[loc].checked = false
 					Locations[loc].date = ""
+					Locations[loc].pos = {latitude=0,longitude=0}
 				end
 			end
 		end
@@ -242,10 +242,11 @@ function module.setupServer(server)
 	end)
 
 	server:post("/admin/createlocation", function(req, res)
-		if Locations[req.body.username] then
+		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
 		end
-		Locations[req.body.username]={checked=false, username=""}
+		p(req.body.pos)
+		Locations[req.body.location]={checked=false, username="", date="", pos=req.body.pos}
 		SaveTable(Locations,"locations")
 		res:send("created, go back",200)
 	end)

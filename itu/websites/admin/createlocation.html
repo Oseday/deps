@@ -58,7 +58,9 @@
         <form class="form-signin" action="">
             <h1 class="h3 mb-3 font-weight-normal">Lokasyon ekle</h1>
             <label for="inputUsername" class="sr-only">Lokasyon adı:</label>
-            <input type="text" id="inputUsername" name="username" class="form-control form-username" placeholder="Lokasyon adı" required="" autofocus="">
+            <input type="text" id="inputLocation" name="location" class="form-control form-username" placeholder="Lokasyon adı" required="" autofocus="">
+            <input type="text" id="inputLatitude" name="latitude" class="form-control form-username" placeholder="Latitude (enlem)" required="" autofocus="">
+            <input type="text" id="inputLongitude" name="longitude" class="form-control form-username" placeholder="Longitude (boylam)" required="" autofocus="">
             <div class="invalid-feedback">Bu lokasyon adı zaten var</div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Ekle</button>
         </form>
@@ -66,7 +68,16 @@
         <script type="text/javascript">
             $(".form-signin").submit(function(event) {
                 //document.location.href = "/admin/createleteuser/" + $("#inputUsername").val();
-                $.post("/admin/createlocation", $("#inputUsername")).done( function(data) {
+
+                let posttab = {
+                    location: $("#inputUsername").val(),
+                    pos: {
+                        latitude: $("#inputLatitude").val(),
+                        longitude: $("#inputLongitude").val()
+                    }
+                }
+
+                $.post("/admin/createlocation", posttab).done( function(data) {
                     document.location.href = "/admin";
                 }).fail(function(){
                     $(".form-username").toggleClass("is-invalid", true);
