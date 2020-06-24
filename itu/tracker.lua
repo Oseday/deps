@@ -122,7 +122,7 @@ function module.setupServer(server)
 
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
-			t[#t+1]={Location, isChecked, isDisabled, Users[occupancy].fullname}
+			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or ""}
 		end
 		res:json(t,200)
 	end)
