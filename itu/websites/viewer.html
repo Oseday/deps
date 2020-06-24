@@ -84,6 +84,13 @@
                         checkbox.prop("checked", !checkbox.prop("checked"))
                     }
                 })
+                
+                $(".checkbox").click(function(){
+                    var checkbox = $(this).find("input[type=checkbox]");
+                    if(!checkbox.prop("disabled")){
+                        checkbox.prop("checked", !checkbox.prop("checked"))
+                    }
+                })
             }
 
             $.post("tabledata", {username: username}).done(function(data) {
