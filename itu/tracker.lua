@@ -128,6 +128,8 @@ function module.setupServer(server)
 	end)
 
 	server:post("/viewer/tablesubmit", function(req, res)
+		p(req.body)
+
 		local data = req.body.data
 		local pos = req.body.pos
 
