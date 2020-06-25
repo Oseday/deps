@@ -67,8 +67,8 @@ end
 local Users = {testuser={fullname="Test User"},cancakir={fullname="Can Çakır"}}
 
 local Locations = {
-	["Lokasyon A"] = {checked=true, details="",  username="testuser", date="00:00", pos={latitude=0,longitude=0}},
-	["Lokasyon B"] = {checked=true, details="",  username="cancakir", date="00:00", pos={latitude=0,longitude=0}},
+	["Lokasyon A"] = {checked=true, details="",  username="testuser", date="15:07", pos={latitude=0,longitude=0}},
+	["Lokasyon B"] = {checked=true, details="",  username="cancakir", date="10:41", pos={latitude=0,longitude=0}},
 	["Lokasyon C"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}},
 	["Lokasyon D"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}},
 }
@@ -122,7 +122,7 @@ function module.setupServer(server)
 
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
-			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date}
+			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date, tab.details}
 		end
 		res:json(t,200)
 	end)
