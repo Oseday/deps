@@ -1,6 +1,25 @@
 <html lang="en">
     <link type="text/css" rel="stylesheet" id="dark-mode-general-link">
     <link type="text/css" rel="stylesheet" id="dark-mode-custom-link">
+
+<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+
     <style type="text/css" id="dark-mode-custom-style"></style>
     <head>
         <meta charset="utf-8">
@@ -60,6 +79,9 @@
                                 <div class="alert alert-danger" id="location-force-enable" role="alert">
                                     Lokasyonunuzu açın ya da ayarlarınızdan lütfen izin verin
                                 </div>
+                                <div class="alert alert-danger" id="location-get-error" role="alert">
+                                    Lokasyonunuzu alırken bir hata oluştu
+                                </div>
                                 <button class="btn btn-lg btn-primary btn-block" type="submit">Kaydet</button>
                             </div>
                         </div>
@@ -78,6 +100,9 @@
                 })
                 $("#location-force-enable").click(function() {
                     $("#location-force-enable").hide();
+                })
+                $("#location-get-error").click(function() {
+                    $("#location-get-error").hide();
                 })
             }
             closeAlerts();
@@ -147,12 +172,23 @@
                 })
             }
 
+            function geoError() {
+                $("#gettinglocation").hide();
+                $("#location-get-error").show();
+            }
+
+            let geoOptions = {
+                timeout:3000,
+                maximumAge:10000,
+                enableHighAccuracy: true
+            }
+
             function sendForm(){
                 $("#location-force-enable").show();
                 if (navigator.geolocation) {
                     $("#location-force-enable").hide();
                     $("#gettinglocation").show();
-                    navigator.geolocation.getCurrentPosition(submitRequest);
+                    navigator.geolocation.getCurrentPosition(submitRequest,geoError,geoOptions);
                 } else {
                     //submitRequest({coords:{latitude:0,longitude:0}})
                 }

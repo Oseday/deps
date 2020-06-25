@@ -121,7 +121,6 @@ function module.setupServer(server)
 
 	server:post("/login", function(req, res)
 		local username = req.body.username
-		p(username)
 		if Users[username] then
 			res:send("",200)
 		else
@@ -132,12 +131,8 @@ function module.setupServer(server)
 	server:post("/viewer/tabledata", function(req, res)
 		local t = {}
 		for Location,tab in pairs(Locations) do
-
 			local occupancy = tab.username
 			local isChecked = tab.checked
-
-			p(req.body)
-			p(req.body.username)
 
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
@@ -147,10 +142,6 @@ function module.setupServer(server)
 	end)
 
 	server:post("/viewer/tablesubmit", function(req, res)
-		p(req.body)
-
-		print(next(req.body))
-
 		req.body = json.parse((next(req.body)))
 
 		local dataT = req.body.data
@@ -283,8 +274,6 @@ function module.setupServer(server)
 	end)
 
 	server:post("/admin/createlocation", function(req, res)
-		p(req.body)
-		p(req.body.pos)
 		req.body = json.parse((next(req.body)))
 		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
