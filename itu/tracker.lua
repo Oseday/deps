@@ -28,6 +28,24 @@ function removedir(dir)
 	return os.execute("rm -rf itu"..OSS..dir)
 end
 
+function GeoDistance(lat1,lon1,lat2,lon2)
+	local R = 6371e3
+	local p1 = lat1 * math.pi/180
+	local p2 = lat2 * math.pi/180
+	local dp = (lat2-lat1) * math.pi/180
+	local dl = (lon2-lon1) * math.pi/180
+	local a = math.sin(dp/2) * math.sin(dp/2) +
+			math.cos(p1) * math.cos(p2) *
+			math.sin(dl/2) * math.sin(dl/2)
+	local c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a));
+	return R * c
+end
+
+function GetStringGeoDistance(lat1,lon1,lat2,lon2)
+	local f = math.floor(GeoDistance(lat1,lon1,lat2,lon2)+0.5)
+	return f>100 and "100m" or tostring(f).."m"
+end
+
 local function TableToString(t)
 	local s = "{"
 	for k,v in pairs(t) do
@@ -67,10 +85,11 @@ end
 local Users = {testuser={fullname="Test User"},cancakir={fullname="Can Çakır"}}
 
 local Locations = {
-	["Lokasyon A"] = {checked=true, details="",  username="testuser", date="15:07", pos={latitude=0,longitude=0}},
-	["Lokasyon B"] = {checked=true, details="",  username="cancakir", date="10:41", pos={latitude=0,longitude=0}},
-	["Lokasyon C"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}},
-	["Lokasyon D"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}},
+	["Lokasyon A"] = {checked=true, details="",  username="testuser", date="15:07", pos={latitude=0,longitude=0}, dist="1m",},
+	["Lokasyon B"] = {checked=true, details="",  username="cancakir", date="10:41", pos={latitude=0,longitude=0}, dist="1m",},
+	["Lokasyon C"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
+	["Lokasyon D"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
+	["Lokasyon E"] = {checked=false, details="", username="", date="", pos={latitude=41.0157056,longitude=28.9701888}, dist="1m",},
 }
 
 
@@ -122,7 +141,9 @@ function module.setupServer(server)
 
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
-			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date, tab.details}
+			local dist = tab.dist>100 and "100" or tostring(tab.dist)
+
+			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date, tab.details, dist}
 		end
 		res:json(t,200)
 	end)
