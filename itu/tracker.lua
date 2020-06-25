@@ -202,7 +202,7 @@ function module.setupServer(server)
 	]]
 
 
-	server:get("/admin/userdata", function(req, res)
+	server:post("/admin/userdata", function(req, res)
 		local t = {}
 		for username,v in pairs(Users) do
 
@@ -283,7 +283,7 @@ function module.setupServer(server)
 		return "deleted, go back",200
 	end
 
-	server:get("/admin/locationdata", function(req, res)
+	server:post("/admin/locationdata", function(req, res)
 		local t = {}
 		for k,v in pairs(Locations) do
 			t[#t+1] = {k}

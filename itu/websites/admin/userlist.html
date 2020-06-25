@@ -74,7 +74,7 @@
             }
 
             function CompleteUpdate(){
-                $.get("/admin/userdata").done(function(data) {
+                $.post("/admin/userdata").done(function(data) {
                     UpdateForm(data)
                 }).fail(function(){
                     document.location.href = "/admin"
