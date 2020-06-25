@@ -141,9 +141,7 @@ function module.setupServer(server)
 
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
-			local dist = tab.dist>100 and "100" or tostring(tab.dist)
-
-			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date, tab.details, dist}
+			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date, tab.details, tab.dist}
 		end
 		res:json(t,200)
 	end)
@@ -278,6 +276,7 @@ function module.setupServer(server)
 			Locations[k].checked = false
 			Locations[k].username = ""
 			Locations[k].date = ""
+			Locations[k].dist = "0m"
 		end
 		SaveTable(Locations,"locations")
 		res:send("Locations reset, go back",200)
@@ -290,7 +289,7 @@ function module.setupServer(server)
 		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
 		end
-		Locations[req.body.location]={checked=false, details=req.body.details, username="", date="", pos={latitude=tonumber(req.body.pos.latitude),longitude=tonumber(req.body.pos.longitude)}}
+		Locations[req.body.location]={checked=false, details=req.body.details, username="", date="", pos={latitude=tonumber(req.body.pos.latitude),longitude=tonumber(req.body.pos.longitude)}, dist="0m"}
 		SaveTable(Locations,"locations")
 		res:send("created, go back",200)
 	end)
@@ -307,7 +306,8 @@ function module.setupServer(server)
 	server:post("/admin/locationdata", function(req, res)
 		local t = {}
 		for k,v in pairs(Locations) do
-			t[#t+1] = {k}
+			local fullname = v.username=="" and "" or Users[v.username].fullname
+			t[#t+1] = {k,v.checked,v.username,fullname,v.dist}
 		end
 		res:json(t,200)
 	end)
