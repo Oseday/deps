@@ -73,7 +73,7 @@
                     console.log(locationName, isChecked, isDisabled)
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex align-items-center list-group-item-dark">
-                            <d>${locationName}${(isChecked ? "<i><small>  "+${details}+"  ("+occupancy+") "+datef+"</small></i>" : "")}</d>
+                            <d>${locationName}${(isChecked ? "<i><small>  "+details+"  ("+occupancy+") "+datef+"</small></i>" : "")}</d>
                             <input type="checkbox" name="${locationName}" class="ml-auto" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>
                         </li>`
                     )
