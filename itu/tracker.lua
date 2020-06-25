@@ -43,7 +43,7 @@ end
 
 function GetStringGeoDistance(lat1,lon1,lat2,lon2)
 	local f = math.floor(GeoDistance(lat1,lon1,lat2,lon2)+0.5)
-	return f>100 and "100m" or tostring(f).."m"
+	return f>900 and "900m" or tostring(f).."m"
 end
 
 local function TableToString(t)
@@ -136,7 +136,7 @@ function module.setupServer(server)
 
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
-			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date, tab.details, tab.dist}
+			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date, tab.details, tab.dist, tab.pos}
 		end
 		res:json(t,200)
 	end)
