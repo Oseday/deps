@@ -69,7 +69,7 @@
                     let dist = rowData[4];
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
-                            ${location}: ${checked ? username+" ("+fullname") ("+dist+")" : "-"}
+                            ${location}: ${(checked ? username+" ("+fullname") ("+dist+")" : "-")}
                         </li>`
                     )
                 }
