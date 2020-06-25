@@ -67,10 +67,10 @@ end
 local Users = {testuser={fullname="Test User"},cancakir={fullname="Can Çakır"}}
 
 local Locations = {
-	["Lokasyon A"] = {checked=true,  username="testuser", date="00:00", pos={latitude=0,longitude=0}},
-	["Lokasyon B"] = {checked=true,  username="cancakir", date="00:00", pos={latitude=0,longitude=0}},
-	["Lokasyon C"] = {checked=false, username="", date="", pos={latitude=0,longitude=0}},
-	["Lokasyon D"] = {checked=false, username="", date="", pos={latitude=0,longitude=0}},
+	["Lokasyon A"] = {checked=true, details="",  username="testuser", date="00:00", pos={latitude=0,longitude=0}},
+	["Lokasyon B"] = {checked=true, details="",  username="cancakir", date="00:00", pos={latitude=0,longitude=0}},
+	["Lokasyon C"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}},
+	["Lokasyon D"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}},
 }
 
 
@@ -254,7 +254,9 @@ function module.setupServer(server)
 
 	server:get("/admin/resetalllocations", function(req, res)
 		for k,v in pairs(Locations) do
-			Locations[k] = {checked=false, username="", date=""}
+			Locations[k].checked = false
+			Locations[k].username = ""
+			Locations[k].date = ""
 		end
 		SaveTable(Locations,"locations")
 		res:send("Locations reset, go back",200)
@@ -267,7 +269,7 @@ function module.setupServer(server)
 		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
 		end
-		Locations[req.body.location]={checked=false, username="", date="", pos={latitude=tonumber(req.body.pos.latitude),longitude=tonumber(req.body.pos.longitude)}}
+		Locations[req.body.location]={checked=false, details=req.body.details, username="", date="", pos={latitude=tonumber(req.body.pos.latitude),longitude=tonumber(req.body.pos.longitude)}}
 		SaveTable(Locations,"locations")
 		res:send("created, go back",200)
 	end)
