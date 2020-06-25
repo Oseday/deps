@@ -118,14 +118,11 @@
             }
 
             function sendForm(){
-                /* UNTIL HTTPS COMES
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(submitRequest);
                 } else {
                     submitRequest({coords:{latitude:0,longitude:0}})
                 }
-                */
-                submitRequest({coords:{latitude:0,longitude:0}})
             }
 
             $(".MyForm").submit(function(event) {
