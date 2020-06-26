@@ -274,6 +274,7 @@ function module.setupServer(server)
 	end)
 
 	server:post("/admin/createuser", function(req, res)
+		p(req.body)
 		p(req.body.username)
 		if Users[req.body.username] then
 			res:send("already an user with this name, go back",400)
