@@ -111,7 +111,7 @@
 
             let usernameArray = window.location.href.split("/")
             let username = usernameArray[usernameArray.length-1] //window.location.href.split("?username=")[1]
-            $("#myLocations").append(`<input type="text" name="username" value="${username}" hidden>`)
+            //$("#myLocations").append(`<input type="text" name="username" value="${username}" hidden>`)
 
             $("#greet").html("Beslediğiniz bölgeleri seçiniz:")
 
@@ -222,17 +222,37 @@
 
                 let posttab = {
                     data: formData,
+                    username: username,
                     pos: {
                         latitude: pos.coords.latitude, 
                         longitude: pos.coords.longitude
                     }
                 }
 
-                $.post("tablesubmit", JSON.stringify(posttab)).done(function() {
+                let stringpost = JSON.stringify(posttab)
+
+                let ajaxt = {
+                    type: "POST",
+                    url: "tablesubmit",
+                    data: stringpost,
+                    success: postsuc,
+                    fail: postfail
+                }
+
+                $.ajax(ajaxt).done(function() {
                     $("#success").show();
                 }).fail(function(){
                     $("#server-error").show();
                 })
+
+
+                /*
+                $.post("tablesubmit", stringpost).done(function() {
+                    $("#success").show();
+                }).fail(function(){
+                    $("#server-error").show();
+                })
+                */
             }
 
             function geoError() {
