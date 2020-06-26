@@ -96,7 +96,7 @@
             let locArray = window.location.href.split("/")
             let locationP = locArray[locArray.length-1].replace("-"," ")
 
-            $.post("/admin/locationchange",{location: locationP}).done(function(data){
+            $.post("/admin/locationedit",{location: locationP}).done(function(data){
                 $("#inputLocation").val(data.location);
                 $("#inputDetails").val(data.details);
                 $("#inputLatitude").val(data.latitude);
@@ -119,7 +119,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "locationchange/edit",
+                    url: "locationedit/edit",
                     data: JSON.stringify(posttab),
                     contentType: 'application/json'
                 }).done( function(data) {
