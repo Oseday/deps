@@ -329,7 +329,7 @@ function module.setupServer(server)
 		local t = {}
 		for k,v in pairs(Locations) do
 			local fullname = v.username=="" and "" or Users[v.username].fullname
-			t[#t+1] = {k,v.checked,v.username,fullname,v.dist,v.id}
+			t[#t+1] = {k,v.checked,v.username,fullname,v.dist,v.id,v.details,v.date}
 		end
 		res:json(t,200)
 	end)
