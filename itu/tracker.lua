@@ -173,6 +173,7 @@ function module.setupServer(server)
 					Locations[loc].username = ""
 					Locations[loc].checked = false
 					Locations[loc].date = ""
+					Locations[loc].dist = "0m"
 				end
 			end
 		end
