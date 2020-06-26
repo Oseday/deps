@@ -74,13 +74,15 @@
                                     <button type="button" class="close" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
                                 </div>
                                 <div class="alert alert-warning" id="gettinglocation" role="alert">
-                                    Lokasyon belirleniyor
+                                    Lokasyon belirleniyor, izin istenirse lütfen izin veriniz
                                 </div>
                                 <div class="alert alert-danger" id="location-force-enable" role="alert">
                                     Lokasyonunuzu açın ya da ayarlarınızdan lütfen izin verin
+                                    <button type="button" class="close" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
                                 </div>
                                 <div class="alert alert-danger" id="location-get-error" role="alert">
                                     Lokasyonunuzu alırken bir hata oluştu
+                                    <button type="button" class="close" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
                                 </div>
                                 <button class="btn btn-lg btn-primary btn-block" type="submit">Kaydet</button>
                             </div>
@@ -113,7 +115,64 @@
 
             $("#greet").html("Beslediğiniz bölgeleri seçiniz:")
 
-            function UpdateForm(data){
+            function geoLocDistance(lat1,lon1,lat2,lon2) {
+                let R = 6371e3; // metres
+                let p1 = lat1 * Math.PI/180; // p, l in radians
+                let p2 = lat2 * Math.PI/180;
+                let dp = (lat2-lat1) * Math.PI/180;
+                let dl = (lon2-lon1) * Math.PI/180;
+
+                let a = Math.sin(dp/2) * Math.sin(dp/2) +
+                          Math.cos(p1) * Math.cos(p2) *
+                          Math.sin(dl/2) * Math.sin(dl/2);
+                let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+                let d = R * c; // in metres
+                return d;
+            }
+
+            var locationDataP;
+
+            function GetLocText(rowData,coords) {
+                let locationName = rowData[0]
+                let isChecked = rowData[1]
+                let isDisabled = rowData[2]
+                let occupancy = rowData[3]
+                let datef = rowData[4]
+                let details = rowData[5]
+                let distance = rowData[6]
+                let loccoords = rowData[7]
+                let coordstr = ""
+                if (coords) {
+                    let d = geoLocDistance(coords.longitude,coords.latitude,loccoords.longitude,loccoords.latitude)
+                    coordstr = d>900 ? "900m" : d+"m"
+                }
+                let ls = ""
+                if (isChecked) {
+                    ls = `<d>${locationName}<i><small>  ${details}  (${occupancy}) ${datef} ${distance}</small></i></d>`
+                }else{
+                    ls = `<d>${locationName}<i><small>  ${details} ${coordstr}</small></i></d>`
+                }
+
+                let button = `<input type="checkbox" name="${locationName}" class="ml-auto" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>`
+
+                return ls + button
+            }
+
+            function Tracker(geoloc) {
+                $(".list-group-item").each(function(index) {
+                    let rowData = locationDataP[index]
+                    let htmlc = GetLocText(rowData,geoloc.coords)
+                    console.log(geoloc)
+                    $(this).html(htmlc)
+                })
+            }
+
+
+
+            function UpdateForm(data,coords){
+                $("#myLocations").empty();
+                locationDataP = data;
                 for(let [rowId, rowData] of Object.entries(data)){
                     let locationName = rowData[0]
                     let isChecked = rowData[1]
@@ -121,28 +180,32 @@
                     let occupancy = rowData[3]
                     let datef = rowData[4]
                     let details = rowData[5]
-                    console.log(locationName, isChecked, isDisabled)
+                    let distance = rowData[6]
+                    
+                    let stradd = GetLocText(rowData,coords)
+
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex align-items-center list-group-item-dark">
-                            <d>${locationName}${(isChecked ? "<i><small>  "+details+"  ("+occupancy+") "+datef+"</small></i>" : "")}</d>
-                            <input type="checkbox" name="${locationName}" class="ml-auto" aria-label="Something" ${(isDisabled ? " disabled" : "")} ${(isChecked ? " checked" : "")}>
+                            ${stradd}
+                            
                         </li>`
                     )
                 }
                 
                 $(".list-group-item").click(function(){
-                    var checkbox = $(this).find("input[type=checkbox]");
+                    let checkbox = $(this).find("input[type=checkbox]");
                     if(!checkbox.prop("disabled")){
                         checkbox.prop("checked", !checkbox.prop("checked"))
                     }
                 })
 
                 $(".ml-auto").click(function(){
-                    var checkbox = $(this).find("input[type=checkbox]");
+                    let checkbox = $(this).find("input[type=checkbox]");
                     if(!checkbox.prop("disabled")){
                         checkbox.prop("checked", !checkbox.prop("checked"))
                     }
                 })
+
             }
 
             $.post("https://verbipati.org/viewer/tabledata", {username: username}).done(function(data) {
@@ -178,10 +241,12 @@
             }
 
             let geoOptions = {
-                timeout:3000,
+                timeout:4000,
                 maximumAge:10000,
                 enableHighAccuracy: true
             }
+
+            navigator.geolocation.watchPosition(Tracker,geoError,geoOptions)
 
             function sendForm(){
                 $("#location-force-enable").show();
