@@ -142,6 +142,13 @@ function module.setupServer(server)
 	end)
 
 	server:post("/viewer/tablesubmit", function(req, res)
+
+		p(req.body)
+
+		do
+			return res:send("",300)
+		end
+
 		req.body = json.parse((next(req.body)))
 
 		local dataT = req.body.data
