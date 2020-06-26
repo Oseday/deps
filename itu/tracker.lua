@@ -213,13 +213,14 @@ function module.setupServer(server)
 		if not id then
 			res:send("No location id var body",400)
 		end
-		if not IDtoLoc[id] then
+		local locationname = IDtoLoc[id]
+		if not locationname then
 			res:send("No location with that id",400)
 		end
-		local loc = Locations[IDtoLoc[id]]
+		local loc = Locations[locationname]
 		local tab = {
-			location = location,
 			id = id,
+			location = locationname,
 			details = loc.details,
 			latitude = loc.pos.latitude,
 			longitude = loc.pos.longitude,
