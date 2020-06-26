@@ -202,8 +202,8 @@ function module.setupServer(server)
 		local tab = {
 			location = location,
 			details = loc.details,
-			latitude = loc.latitude,
-			longitude = loc.longitude,
+			latitude = loc.pos.latitude,
+			longitude = loc.pos.longitude,
 		}
 		res:json(tab,200)
 	end)
