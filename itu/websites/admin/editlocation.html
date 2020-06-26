@@ -94,9 +94,9 @@
 
 
             let locArray = window.location.href.split("/")
-            let location = usernameArray[usernameArray.length-1].replace("-"," ")
+            let locationP = usernameArray[usernameArray.length-1].replace("-"," ")
 
-            $.post("/admin/locationchange",{location: location}).done(function(data){
+            $.post("/admin/locationchange",{location: locationP}).done(function(data){
                 $("#inputLocation").val(data.location);
                 $("#inputDetails").val(data.details);
                 $("#inputLatitude").val(data.latitude);
@@ -108,7 +108,7 @@
 
             $(".form-signin").submit(function(event) {
                 let posttab = {
-                    locationP: location,
+                    locationP: locationP,
                     location: $("#inputLocation").val(),
                     details: $("#inputDetails").val(),
                     pos: {
@@ -125,7 +125,7 @@
                 }).done( function(data) {
                     $("#success").show();
                     $("#error").hide();
-                    location = posttab.location;
+                    locationP = posttab.location;
                 }).fail(function(){
                     $("#error").show();
                 })
