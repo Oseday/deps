@@ -97,6 +97,7 @@
             let locationP = locArray[locArray.length-1].replace("-"," ")
 
             $.post("/admin/editlocation",{location: locationP}).done(function(data){
+                console.log(data);
                 $("#inputLocation").val(data.location);
                 $("#inputDetails").val(data.details);
                 $("#inputLatitude").val(data.latitude);
