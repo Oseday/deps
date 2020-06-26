@@ -220,11 +220,9 @@ function module.setupServer(server)
 			res:send("No such location",400)
 		end
 
-		local tempt = {}
-		for k,v in pairs(loc) do
-			tempt[k]=v
-		end
 		Locations[location] = nil
+
+		p(req.body.location,req.body.details,req.body.latitude,req.body.longitude)
 
 		newLocation(req.body.location,req.body.details,req.body.latitude,req.body.longitude)
 		SaveTable(Locations,"locations")
