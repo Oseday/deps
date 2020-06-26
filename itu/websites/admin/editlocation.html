@@ -94,7 +94,7 @@
 
 
             let locArray = window.location.href.split("/")
-            let locationP = usernameArray[usernameArray.length-1].replace("-"," ")
+            let locationP = locArray[locArray.length-1].replace("-"," ")
 
             $.post("/admin/locationchange",{location: locationP}).done(function(data){
                 $("#inputLocation").val(data.location);
