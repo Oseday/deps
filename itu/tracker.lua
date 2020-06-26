@@ -124,6 +124,9 @@ end
 function LoadTable(tab,path)
 	local f,w = quickio.read(pafix("itu/"..path))
 	if f then
+		for k in pairs(tab) do
+			tab[k]=nil
+		end
 		local temp = loadstring(f)()
 		for k,v in pairs(temp) do
 			tab[k]=v
