@@ -13,6 +13,7 @@ local tick = function() return helpers.getTime()/1000 end
 
 local quickio = require"ose/quickio"
 local pafix = require"ose/pafix"
+local rndid = require"ose/rndid"
 
 local OSS = jit.os=="Windows" and "\\" or "/"
 
@@ -75,25 +76,24 @@ function SerializeHashmap(tab)
 	return t
 end
 
---read
-	--(loadstring(quickio.read(pafix("itu/%s/metadata",key)))())
-
---write
-	--if not direxists(key) then return false,"Key doesn't exists",400 end
-	--return quickio.write(pafix("itu/%s/metadata",key),TableToLoadstringFormat(metadata))
-
 local Users = {testuser={fullname="Test User"},cancakir={fullname="Can Çakır"}}
 
 local Locations = {
-	["Lokasyon A"] = {checked=true, details="",  username="testuser", date="15:07", pos={latitude=0,longitude=0}, dist="1m",},
-	["Lokasyon B"] = {checked=true, details="",  username="cancakir", date="10:41", pos={latitude=0,longitude=0}, dist="1m",},
-	["Lokasyon C"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
-	["Lokasyon D"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
-	["Lokasyon E"] = {checked=false, details="", username="", date="", pos={latitude=41.0157051,longitude=28.9701888}, dist="1m",},
+	["Lokasyon A"] = {checked=true, id="abca", details="",  username="testuser", date="15:07", pos={latitude=0,longitude=0}, dist="1m",},
+	["Lokasyon B"] = {checked=true, id="abcb", details="",  username="cancakir", date="10:41", pos={latitude=0,longitude=0}, dist="1m",},
+	["Lokasyon C"] = {checked=false, id="abcc", details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
+	["Lokasyon D"] = {checked=false, id="abcd", details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
+	["Lokasyon E"] = {checked=false, id="abce", details="", username="", date="", pos={latitude=41.0157051,longitude=28.9701888}, dist="1m",},
 }
 
-function newLocation(locationname, details, lat, long)
+local IDtoLoc = {}
+
+local genids = {}
+
+function newLocation(locationname, details, lat, long, id)
+	id = id or rndid(genids)
 	Locations[locationname]={
+		id=id,
 		checked=false, 
 		details=details and details or "", 
 		username="", 
@@ -101,6 +101,19 @@ function newLocation(locationname, details, lat, long)
 		pos={latitude=tonumber(lat) or 0,longitude=tonumber(long) or 0}, 
 		dist="0m"
 	}
+	IDtoLoc[id]=locationname
+end
+
+local function deleteLocation(location)
+	local loc = Locations[location]
+	if not loc then
+		return "no locations with this name, go back",400
+	end
+	IDtoLoc[loc.id]=nil
+	genids[loc.id]=nil
+	Locations[location]=nil
+	SaveTable(Locations,"locations")
+	return "deleted, go back",200
 end
 
 function SaveTable(tab,path)
@@ -124,6 +137,10 @@ end
 do --Server start read users and locations
 	LoadTable(Users,"users")
 	LoadTable(Locations,"locations")
+	for k,v in pairs(Locations) do
+		genids[v.id] = true
+		IDtoLoc[v.id] = k
+	end
 end
 
 function module.setupServer(server)
@@ -192,16 +209,17 @@ function module.setupServer(server)
 	end)
 
 	server:post("/admin/editlocation", function(req, res)
-		local location = req.body.location
-		if not location then
-			res:send("No location var body",400)
+		local id = req.body.id
+		if not id then
+			res:send("No location id var body",400)
 		end
-		local loc = Locations[location]
-		if not loc then
-			res:send("No such location",400)
+		if not IDtoLoc[id] then
+			res:send("No location with that id",400)
 		end
+		local loc = Locations[IDtoLoc[id]]
 		local tab = {
 			location = location,
+			id = id,
 			details = loc.details,
 			latitude = loc.pos.latitude,
 			longitude = loc.pos.longitude,
@@ -210,21 +228,24 @@ function module.setupServer(server)
 	end)
 
 	server:post("/admin/editlocation/edit", function(req, res)
-		local location = req.body.locationP
-		if not location then
-			res:send("No location var body",400)
+		local id = req.body.id
+		if not id then
+			res:send("No location id var body",400)
 		end
 
-		local loc = Locations[location]
-		if not loc then
-			res:send("No such location",400)
+		if not IDtoLoc[id] then
+			res:send("No location with that id",400)
 		end
 
-		Locations[location] = nil
+		local locname = IDtoLoc[id]
 
-		p(req.body.location,req.body.details,req.body.pos.latitude,req.body.pos.longitude)
+		deleteLocation(locname)
 
-		newLocation(req.body.location,req.body.details,req.body.pos.latitude,req.body.pos.longitude)
+		local loc = Locations[locname]
+
+		p(req.body.location,req.body.details,req.body.pos.latitude,req.body.pos.longitude, id)
+
+		newLocation(req.body.location,req.body.details,req.body.pos.latitude,req.body.pos.longitude, id)
 		SaveTable(Locations,"locations")
 
 		res:send("",200)
@@ -303,31 +324,22 @@ function module.setupServer(server)
 		res:send("created, go back",200)
 	end)
 
-	local function deletelocation(location)
-		if not Locations[location] then
-			return "no locations with this name, go back",400
-		end
-		Locations[location]=nil
-		SaveTable(Locations,"locations")
-		return "deleted, go back",200
-	end
-
 	server:post("/admin/locationdata", function(req, res)
 		local t = {}
 		for k,v in pairs(Locations) do
 			local fullname = v.username=="" and "" or Users[v.username].fullname
-			t[#t+1] = {k,v.checked,v.username,fullname,v.dist}
+			t[#t+1] = {k,v.checked,v.username,fullname,v.dist,v.id}
 		end
 		res:json(t,200)
 	end)
 
 	server:post("/admin/deletelocation", function(req, res)
-		res:send(deletelocation(req.body.location))
+		res:send(deleteLocation(req.body.location))
 	end)
 
 	server:post("/admin/bulkdeletelocations", function(req, res)
 		for location in pairs(req.body) do
-			deletelocation(location)
+			deleteLocation(location)
 		end
 		res:send("deleted",200)
 	end)

@@ -67,7 +67,7 @@
                     let username = rowData[2];
                     let fullname = rowData[3];
                     let dist = rowData[4];
-                    let locationid = location.replace(" ","-");
+                    let locationid = rowData[5];//location.replace(" ","-");
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark" id=${locationid}>
                             ${location}: ${(checked ? username+" ("+fullname+") ("+dist+")" : "-")} 
