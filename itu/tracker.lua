@@ -165,96 +165,20 @@ function module.setupServer(server)
 					Locations[loc].username = username
 					Locations[loc].checked = true
 					Locations[loc].date = os.date("%H:%M", os.time()+3*60*60)
-					Locations[loc].pos = pos
+					local posL = Locations[loc].pos
+					Locations[loc].dist = GetStringGeoDistance(pos.latitude,pos.longitude,posL.latitude,posL.longitude)
 				end
 			else
 				if tab.checked and tab.username == username then
 					Locations[loc].username = ""
 					Locations[loc].checked = false
 					Locations[loc].date = ""
-					Locations[loc].pos = {latitude=0,longitude=0}
 				end
 			end
 		end
 
 		res:send("Success",200)
-
-
-
-		--[[
-		do
-			return res:send("",300)
-		end
-
-		req.body = json.parse((next(req.body)))
-
-		local dataT = req.body.data
-		local pos = req.body.pos
-
-		local username
-		do
-			for i,v in pairs(dataT) do
-				if v.name == "username" then
-					username = v.value
-					dataT[i]=nil
-				end	
-			end
-		end
-
-		local data = {}
-		for i,v in pairs(dataT) do
-			data[v.name]=v.value
-		end
-
-		if not Users[username] then
-			res:send("",400)
-		end
-
-		data.username = nil
-
-		for loc,tab in pairs(Locations) do
-			if data[loc] then
-				if tab.username == ""  then
-					Locations[loc].username = username
-					Locations[loc].checked = true
-					Locations[loc].date = os.date("%H:%M", os.time()+3*60*60)
-					Locations[loc].pos = pos
-				end
-			else
-				if tab.checked and tab.username == username then
-					Locations[loc].username = ""
-					Locations[loc].checked = false
-					Locations[loc].date = ""
-					Locations[loc].pos = {latitude=0,longitude=0}
-				end
-			end
-		end
-
-		res:send("",200)
-		]]
 	end)
-
-	--[[
-	server:get("/admin/userlist", function(req, res)
-		local s = "<p>"
-		for k in pairs(Users) do
-			s = s .. k .. "<br>"
-		end
-		s = s .. "</p>"
-		res:send(s,200)
-	end)
-	]]
-
-	--[[
-	server:get("/admin/locations", function(req, res)
-		local s = "<p>"
-		for k,t in pairs(Locations) do
-			s = s .. k .. ": " .. (t.username=="" and "0" or (t.username .."("..Users[t.username].fullname..")") ) .. "<br>"
-		end
-		s = s .. "</p>"
-		res:send(s,200)
-	end)
-	]]
 
 
 	server:post("/admin/userdata", function(req, res)
