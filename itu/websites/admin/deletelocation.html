@@ -85,7 +85,7 @@
             }
 
             function CompleteUpdate(){
-                $.get("/admin/locationdata").done(function(data) {
+                $.post("/admin/locationdata").done(function(data) {
                     UpdateForm(data)
                 }).fail(function(){
                     document.location.href = "/admin"
@@ -99,7 +99,7 @@
 
                 $.post("/admin/bulkdeletelocations", formData).done(function() {
                     $(".alert").show();
-                    CompleteUpdate();
+                    //CompleteUpdate();
                 })
 
                 event.preventDefault()
