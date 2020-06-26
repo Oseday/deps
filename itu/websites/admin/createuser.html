@@ -62,10 +62,22 @@
             <label for="inputFullname" class="sr-only">Full adı:</label>
             <input type="text" id="inputFullname" name="fullname" class="form-control form-username" placeholder="Full adı" required="" autofocus="">
             <div class="invalid-feedback">Bu kullanıcı adı zaten var</div>
+            <div class="alert alert-success" id="success" role="alert">
+                Başarılı şekilde güncellendi!
+                <button type="button" class="close" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+            </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Ekle</button>
         </form>
 
         <script type="text/javascript">
+            function closeAlerts() {
+                $(".alert").hide();
+                $("#success").click(function() {
+                    $("#success").hide();
+                })
+            }
+            closeAlerts();
+
             $(".form-signin").submit(function(event) {
                 //document.location.href = "/admin/createuser/" + $("#inputUsername").val();
 
@@ -77,11 +89,12 @@
                     data: JSON.stringify(posttab),
                     contentType: 'application/json'
                 }).done( function(data) {
-                    document.location.href = "/admin";
+                    //document.location.href = "/admin";
+                    $("#success").show();
                 }).fail(function(){
                     $(".form-username").toggleClass("is-invalid", true);
                 })
-
+                
                 event.preventDefault();
             })
         </script>
