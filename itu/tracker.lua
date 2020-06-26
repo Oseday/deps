@@ -98,7 +98,7 @@ function newLocation(locationname, details, lat, long)
 		details=details and details or "", 
 		username="", 
 		date="", 
-		pos={latitude=tonumber(lat) or 0,longitude=tonumber(long) or long}, 
+		pos={latitude=tonumber(lat) or 0,longitude=tonumber(long) or 0}, 
 		dist="0m"
 	}
 end
@@ -222,9 +222,9 @@ function module.setupServer(server)
 
 		Locations[location] = nil
 
-		p(req.body.location,req.body.details,req.body.latitude,req.body.longitude)
+		p(req.body.location,req.body.details,req.body.pos.latitude,req.body.pos.longitude)
 
-		newLocation(req.body.location,req.body.details,req.body.latitude,req.body.longitude)
+		newLocation(req.body.location,req.body.details,req.body.pos.latitude,req.body.pos.longitude)
 		SaveTable(Locations,"locations")
 
 		res:send("",200)
