@@ -145,6 +145,43 @@ function module.setupServer(server)
 
 		p(req.body)
 
+		local username = req.body.username
+
+		if not Users[username] then
+			res:send("Invalid username",400)
+		end
+
+		local dataT = req.body.data
+		local pos = req.body.pos
+
+		local data = {}
+		for i,v in pairs(dataT) do
+			data[v.name]=v.value
+		end
+
+		for loc,tab in pairs(Locations) do
+			if data[loc] then
+				if tab.username == ""  then
+					Locations[loc].username = username
+					Locations[loc].checked = true
+					Locations[loc].date = os.date("%H:%M", os.time()+3*60*60)
+					Locations[loc].pos = pos
+				end
+			else
+				if tab.checked and tab.username == username then
+					Locations[loc].username = ""
+					Locations[loc].checked = false
+					Locations[loc].date = ""
+					Locations[loc].pos = {latitude=0,longitude=0}
+				end
+			end
+		end
+
+		res:send("Success",200)
+
+
+
+		--[[
 		do
 			return res:send("",300)
 		end
@@ -194,6 +231,7 @@ function module.setupServer(server)
 		end
 
 		res:send("",200)
+		]]
 	end)
 
 	--[[
