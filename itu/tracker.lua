@@ -89,10 +89,19 @@ local Locations = {
 	["Lokasyon B"] = {checked=true, details="",  username="cancakir", date="10:41", pos={latitude=0,longitude=0}, dist="1m",},
 	["Lokasyon C"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
 	["Lokasyon D"] = {checked=false, details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
-	["Lokasyon E"] = {checked=false, details="", username="", date="", pos={latitude=41.0157056,longitude=28.9701888}, dist="1m",},
+	["Lokasyon E"] = {checked=false, details="", username="", date="", pos={latitude=41.0157051,longitude=28.9701888}, dist="1m",},
 }
 
-
+function newLocation(locationname, details, lat, long)
+	Locations[locationname]={
+		checked=false, 
+		details=details and details or "", 
+		username="", 
+		date="", 
+		pos={latitude=lat and tonumber(lat) or 0,longitude=long and tonumber(long) or *}, 
+		dist="0m"
+	}
+end
 
 function SaveTable(tab,path)
 	local f,w = quickio.write(pafix("itu/"..path), TableToLoadstringFormat(tab))
@@ -181,6 +190,47 @@ function module.setupServer(server)
 		res:send("Success",200)
 	end)
 
+	server:post("/admin/editlocation", function(req, res)
+		local location = req.body.location
+		if not location then
+			res:send("No location var body",400)
+		end
+		local loc = Locations[location]
+		if not loc then
+			res:send("No such location",400)
+		end
+		local tab = {
+			location = location,
+			details = loc.details,
+			latitude = loc.latitude,
+			longitude = loc.longitude,
+		}
+		res:json(tab,200)
+	end)
+
+	server:post("/admin/editlocation/edit", function(req, res)
+		local location = req.body.locationP
+		if not location then
+			res:send("No location var body",400)
+		end
+
+		local loc = Locations[location]
+		if not loc then
+			res:send("No such location",400)
+		end
+
+		local tempt = {}
+		for k,v in pairs(loc) do
+			tempt[k]=v
+		end
+		Locations[location] = nil
+
+		newLocation(req.body.location,req.body.details,req.body.latitude,req.body.longitude)
+		SaveTable(Locations,"locations")
+
+		res:send("",200)
+	end)
+
 
 	server:post("/admin/userdata", function(req, res)
 		local t = {}
@@ -248,7 +298,8 @@ function module.setupServer(server)
 		if Locations[req.body.location] then
 			res:send("already a location with this name, go back",400)
 		end
-		Locations[req.body.location]={checked=false, details=req.body.details, username="", date="", pos={latitude=tonumber(req.body.pos.latitude),longitude=tonumber(req.body.pos.longitude)}, dist="0m"}
+		--tonumber(req.body.pos.longitude)
+		newLocation(req.body.location,req.body.details,req.body.pos.latitude,req.body.pos.longitude)
 		SaveTable(Locations,"locations")
 		res:send("created, go back",200)
 	end)

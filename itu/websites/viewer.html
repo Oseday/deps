@@ -88,6 +88,7 @@
                             </div>
                         </div>
                     </form>
+                    <div>Besleme yaptığınız noktada işaretleyip orayı oradayken kaydetin böylece nerede ve ne zaman besleme yaptığınızı teyit edebilelim.</div>
                 </div>
             </div>
         </div>
@@ -229,16 +230,12 @@
                     }
                 }
 
-                let stringpost = JSON.stringify(posttab)
-
-                let ajaxt = {
+                $.ajax({
                     type: "POST",
                     url: "tablesubmit",
-                    data: stringpost,
+                    data: JSON.stringify(posttab),
                     contentType: 'application/json'
-                }
-
-                $.ajax(ajaxt).done(function() {
+                }).done(function() {
                     $("#success").show();
                 }).fail(function(){
                     $("#server-error").show();

@@ -19,6 +19,7 @@ function module.setupServer(Server,MoonCake)
 	Server:get("/",function(req, res) res:sendFile(ITUDir.."/index.html") end)
 
 	Server:get("/viewer/:username",function(req, res) res:sendFile(ITUDir.."/viewer.html") end)
+	Server:get("/admin/editlocation/:locationid",function(req, res) res:sendFile(ITUDir.."/admin/editlocation.html") end)
 
 	StaticFS.addstatic(ITUDir.."/","/")
 
