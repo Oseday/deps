@@ -128,7 +128,7 @@
                 let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
                 let d = R * c; // in metres
-                return d;
+                return Math.floor(d+0.5);
             }
 
             var locationDataP;
