@@ -175,6 +175,7 @@ function module.setupServer(server)
 					Locations[loc].checked = true
 					Locations[loc].date = os.date("%H:%M", os.time()+3*60*60)
 					local posL = Locations[loc].pos
+					p(loc, pos, posL)
 					Locations[loc].dist = GetStringGeoDistance(pos.latitude,pos.longitude,posL.latitude,posL.longitude)
 				end
 			else
