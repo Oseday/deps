@@ -98,7 +98,7 @@ function newLocation(locationname, details, lat, long)
 		details=details and details or "", 
 		username="", 
 		date="", 
-		pos={latitude=lat and tonumber(lat) or 0,longitude=long and tonumber(long) or long}, 
+		pos={latitude=tonumber(lat) or 0,longitude=tonumber(long) or long}, 
 		dist="0m"
 	}
 end
