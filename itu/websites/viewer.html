@@ -247,7 +247,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "tablesubmit",
+                    url: "/viewer/tablesubmit",
                     data: JSON.stringify(posttab),
                     contentType: 'application/json'
                 }).done(function() {
@@ -258,7 +258,7 @@
 
 
                 /*
-                $.post("tablesubmit", stringpost).done(function() {
+                $.post("/viewer/tablesubmit", stringpost).done(function() {
                     $("#success").show();
                 }).fail(function(){
                     $("#server-error").show();
