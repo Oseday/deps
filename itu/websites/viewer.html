@@ -93,7 +93,7 @@
                     </form>
                 </div>
             </div>
-            <div>Besleme yaptığınız noktada işaretleyip orayı oradayken kaydetin böylece nerede ve ne zaman besleme yaptığınızı teyit edebilelim.</div>
+            <div style="padding-bottom: 10px">Besleme yaptığınız noktada işaretleyip orayı oradayken kaydetin böylece nerede ve ne zaman besleme yaptığınızı teyit edebilelim.</div>
         </div>
         <script type="text/javascript">
             window.scrollTo(0,1);
@@ -226,7 +226,8 @@
             $.post("https://verbipati.org/viewer/tabledata", {username: username}).done(function(data) {
                 UpdateForm(data)
             }).fail(function(){
-                document.location.href = "index"
+                setCookie("username","",-1);
+                document.location.href = "/";
             })
 
             function submitRequest(pos){
