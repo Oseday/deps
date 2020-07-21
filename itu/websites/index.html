@@ -32,6 +32,7 @@
 
         <meta name="theme-color" content="#563d7c">
         <script src="jquery.js" type="text/javascript"></script>
+        <script src="jscookies.js" type="text/javascript"></script>
         
         <style>
             html,
@@ -80,10 +81,27 @@
             <input type="text" id="inputUsername" name="username" class="form-control form-username" placeholder="Kullanıcı adı" required="" autofocus="">
             <div class="invalid-feedback">Kullanıcı adı bulunamadı</div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Giriş yap</button>
+            <div style="padding-top: 20px" >Giriş yaparak çerez kullanılmasına izin verirsiniz</div>
         </form>
 
+
         <script type="text/javascript">
+
+            let nc = getCookie("username");
+            if (nc) {
+                $.post("login", $("#inputUsername")).done( function(data) {
+                    document.location.href = "viewer/" + $("#inputUsername").val();
+                }).fail(function(){
+                    //document.location.href = "viewer/" + $("#inputUsername").val(); // for omar's testing, remove later
+                    //$(".form-username").toggleClass("is-invalid", true);
+                    setCookie("username","",-1);
+                })
+            }
+
             $(".form-signin").submit(function(event) {
+                    //document.cookie = "username= "+$("#inputUsername").val()+"; max-age=3600"
+                    setCookie("username",$("#inputUsername").val(),0.01);
+                    console.log(document.cookie)
                 $.post("login", $("#inputUsername")).done( function(data) {
                     document.location.href = "viewer/" + $("#inputUsername").val();
                 }).fail(function(){
