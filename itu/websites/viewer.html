@@ -119,8 +119,10 @@
             //let username = usernameArray[usernameArray.length-1] //window.location.href.split("?username=")[1]
             
             let username = getCookie("username");
-            
-            if (!username) {
+
+            console.log(username);
+
+            if (username==null) {
                 document.location.href = "/";
             }
 
