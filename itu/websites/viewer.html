@@ -34,6 +34,7 @@
         <meta name="theme-color" content="#563d7c">
         <script src="https://verbipati.org/jquery.js" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript.util/0.12.12/javascript.util.min.js" type="text/javascript"></script>
+        <script src="https://verbipati.org/jscookies.js" type="text/javascript"></script>
 
         <style>
             html,
@@ -114,8 +115,14 @@
             }
             closeAlerts();
 
-            let usernameArray = window.location.href.split("/")
-            let username = usernameArray[usernameArray.length-1] //window.location.href.split("?username=")[1]
+            //let usernameArray = window.location.href.split("/")
+            //let username = usernameArray[usernameArray.length-1] //window.location.href.split("?username=")[1]
+            
+            let username = getCookie("username");
+            if (!username) {
+                document.location.href = "/";
+            }
+
             //$("#myLocations").append(`<input type="text" name="username" value="${username}" hidden>`)
 
             $("#greet").html("Beslediğiniz bölgeleri seçiniz:")
