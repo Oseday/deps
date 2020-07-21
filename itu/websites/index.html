@@ -91,7 +91,7 @@
             console.log(nc)
             if (nc) {
                 $.post("login", {username:nc}).done( function(data) {
-                    document.location.href = "viewer/" + $("#inputUsername").val();
+                    document.location.href = "viewer";
                 }).fail(function(){
                     //document.location.href = "viewer/" + $("#inputUsername").val(); // for omar's testing, remove later
                     //$(".form-username").toggleClass("is-invalid", true);
@@ -100,11 +100,9 @@
             }
 
             $(".form-signin").submit(function(event) {
-                    //document.cookie = "username= "+$("#inputUsername").val()+"; max-age=3600"
-                    setCookie("username",$("#inputUsername").val(),0.01);
-                    console.log(document.cookie)
                 $.post("login", $("#inputUsername")).done( function(data) {
-                    document.location.href = "viewer/" + $("#inputUsername").val();
+                    setCookie("username", $("#inputUsername").val(), 0.01);
+                    document.location.href = "viewer"
                 }).fail(function(){
                     //document.location.href = "viewer/" + $("#inputUsername").val(); // for omar's testing, remove later
                     $(".form-username").toggleClass("is-invalid", true);
