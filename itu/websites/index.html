@@ -88,6 +88,7 @@
         <script type="text/javascript">
 
             let nc = getCookie("username");
+            console.log(nc)
             if (nc) {
                 $.post("login", $("#inputUsername")).done( function(data) {
                     document.location.href = "viewer/" + $("#inputUsername").val();
