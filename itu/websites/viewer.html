@@ -94,7 +94,7 @@
                 </div>
             </div>
             <div style="padding-bottom: 0px">Besleme yaptığınız noktada işaretleyip orayı oradayken kaydetin böylece nerede ve ne zaman besleme yaptığınızı teyit edebilelim.</div>
-            <div style="padding-bottom: 5px"> <button class="btn btn-sm btn-link" type="button" name="signout">Çıkış</button> </div>
+            <div style="padding-bottom: 5px"> <button class="btn btn-sm btn-link" type="button" id="signout">Çıkış</button> </div>
         </div>
         <script type="text/javascript">
             window.scrollTo(0,1);
@@ -127,7 +127,7 @@
                 document.location.href = "/";
             }
 
-            $("signout").click(function() {
+            $("#signout").click(function() {
                 setCookie("username","",-1);
                 document.location.href = "/";
             })
@@ -180,17 +180,6 @@
                 return ls + button
             }
 
-            function Tracker(geoloc) {
-                $(".list-group-item").each(function(index) {
-                    let rowData = locationDataP[index]
-                    let htmlc = GetLocText(rowData,geoloc.coords)
-                    console.log(geoloc)
-                    $(this).html(htmlc)
-                })
-            }
-
-
-
             function UpdateForm(data,coords){
                 $("#myLocations").empty();
                 locationDataP = data;
@@ -208,7 +197,6 @@
                     $("#myLocations").append(
                         `<li class="list-group-item d-flex align-items-center list-group-item-dark">
                             ${stradd}
-                            
                         </li>`
                     )
                 }
@@ -281,6 +269,15 @@
                 timeout:4000,
                 maximumAge:10000,
                 enableHighAccuracy: true
+            }
+
+            function Tracker(geoloc) {
+                $(".list-group-item").each(function(index) {
+                    let rowData = locationDataP[index]
+                    let htmlc = GetLocText(rowData,geoloc.coords)
+                    console.log(geoloc)
+                    $(this).html(htmlc)
+                })
             }
 
             //watchPosition disabled for now
