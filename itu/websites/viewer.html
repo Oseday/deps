@@ -144,8 +144,8 @@
                 let dl = (lon2-lon1) * Math.PI/180;
 
                 let a = Math.sin(dp/2) * Math.sin(dp/2) +
-                          Math.cos(p1) * Math.cos(p2) *
-                          Math.sin(dl/2) * Math.sin(dl/2);
+                        Math.cos(p1) * Math.cos(p2) *
+                        Math.sin(dl/2) * Math.sin(dl/2);
                 let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
                 let d = R * c; // in metres
