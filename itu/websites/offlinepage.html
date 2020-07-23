@@ -88,9 +88,10 @@
             <h1 class="h3 mb-3 font-weight-normal">Sunucuya bağlantı kurulamadı</h1>
             <button class="btn btn-lg btn-secondary btn-block" id="retry" type="submit">Tekrar dene</button>
         </form>
-
+        
 
         <script type="text/javascript">
+            navigator.serviceWorker.register("/service-worker.js");
             $("#retry").click(function(event) {
                 document.location.href = "/viewer";
             })
