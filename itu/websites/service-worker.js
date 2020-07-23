@@ -13,6 +13,11 @@ self.addEventListener("message", (event) => {
   }
 });
 
+
+self.addEventListener('activate', async (event) => {
+	console.log("activate!")
+});
+
 self.addEventListener('install', async (event) => {
   event.waitUntil(
     caches.open(CACHE)
