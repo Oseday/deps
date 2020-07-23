@@ -1,5 +1,8 @@
 {
- "name": "App",
+ "name": "VerBiPati",
+ "short_name": "VBP",
+ "description": "VerBiPati klübü web uygulaması.",
+ "start_url": "/viewer",
  "icons": [
   {
    "src": "\/android-icon-36x36.png",
