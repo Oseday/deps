@@ -1,7 +1,7 @@
 {
  "name": "Ver Bi' Pati",
  "short_name": "Ver Bi' Pati",
- "description": "VerBiPati kulübü web uygulaması.",
+ "description": "Ver Bi' Pati İTÜ kulübü web uygulaması.",
  "display": "standalone",
  "start_url": "/viewer",
  "background_color": "white",
