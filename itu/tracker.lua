@@ -150,6 +150,34 @@ do --Server start read users and locations
 	end
 end
 
+do --Server interval timer
+	local h,m,s = 06,10,10
+	function EverydayResetter()
+		print"daily reset"
+		Locations = {}
+		local timet = os.time()
+		local ct = os.date("*t",timet)
+		local nct = os.date("*t",timet)
+		nct.hour = h
+		nct.min = m
+		nct.sec = s-1
+		if timet > os.time(nct) then
+			ct = os.date("*t",timet + (24-ct.hour)*3600)
+		end
+		ct.hour = h
+		ct.min = m
+		ct.sec = s
+		local interval = os.time(ct)-timet
+		if interval <= 1 then
+			interval = 1
+		end
+		print("waiting for:",interval)
+		timer.setTimeout(interval*1000, EverydayResetter)
+	end
+	EverydayResetter()
+end
+
+
 function module.setupServer(server)
 
 	server:post("/login", function(req, res)
