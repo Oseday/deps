@@ -89,6 +89,15 @@ local Locations = {
 	]]
 }
 
+function ResetLocations()
+	for k,v in pairs(Locations) do
+		Locations[k].checked = false
+		Locations[k].username = ""
+		Locations[k].date = ""
+		Locations[k].dist = "0m"
+	end
+	SaveTable(Locations,"locations")
+end
 
 local IDtoLoc = {}
 
@@ -154,6 +163,7 @@ do --Server interval timer
 	local h,m,s = 06,10,10
 	function EverydayResetter()
 		print"daily reset"
+		ResetLocations()
 		Locations = {}
 		local timet = os.time()
 		local ct = os.date("*t",timet)
@@ -340,13 +350,7 @@ function module.setupServer(server)
 
 
 	server:get("/admin/resetalllocations", function(req, res)
-		for k,v in pairs(Locations) do
-			Locations[k].checked = false
-			Locations[k].username = ""
-			Locations[k].date = ""
-			Locations[k].dist = "0m"
-		end
-		SaveTable(Locations,"locations")
+		ResetLocations()
 		res:send("Locations reset, go back",200)
 	end)
 
