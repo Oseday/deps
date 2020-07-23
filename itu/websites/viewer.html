@@ -88,6 +88,7 @@
                                     <button type="button" class="close" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
                                 </div>
                                 <button class="btn btn-lg btn-primary btn-block" type="submit">Kaydet</button>
+                                <button class="btn btn-lg btn-secondary btn-block" id="maplink" type="button">Harita</button>
                             </div>
                         </div>
                     </form>
@@ -115,6 +116,8 @@
                 })
             }
             closeAlerts();
+            
+            $("#greet").html("Beslediğiniz bölgeleri seçiniz:")
 
             //let usernameArray = window.location.href.split("/")
             //let username = usernameArray[usernameArray.length-1] //window.location.href.split("?username=")[1]
@@ -132,9 +135,12 @@
                 document.location.href = "/";
             })
 
-            //$("#myLocations").append(`<input type="text" name="username" value="${username}" hidden>`)
+            $("#maplink").click(function() {
+                document.location.href = "/map";
+            })
 
-            $("#greet").html("Beslediğiniz bölgeleri seçiniz:")
+
+            //$("#myLocations").append(`<input type="text" name="username" value="${username}" hidden>`)
 
             function geoLocDistance(lat1,lon1,lat2,lon2) {
                 let R = 6371e3; // metres
