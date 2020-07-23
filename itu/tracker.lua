@@ -78,13 +78,17 @@ end
 
 local Users = {testuser={fullname="Test User"},cancakir={fullname="Can Çakır"}}
 
+
 local Locations = {
+	--[[
 	["Lokasyon A"] = {checked=true, id="abca", details="",  username="testuser", date="15:07", pos={latitude=0,longitude=0}, dist="1m",},
 	["Lokasyon B"] = {checked=true, id="abcb", details="",  username="cancakir", date="10:41", pos={latitude=0,longitude=0}, dist="1m",},
 	["Lokasyon C"] = {checked=false, id="abcc", details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
 	["Lokasyon D"] = {checked=false, id="abcd", details="", username="", date="", pos={latitude=0,longitude=0}, dist="1m",},
 	["Lokasyon E"] = {checked=false, id="abce", details="", username="", date="", pos={latitude=41.0157051,longitude=28.9701888}, dist="1m",},
+	]]
 }
+
 
 local IDtoLoc = {}
 
