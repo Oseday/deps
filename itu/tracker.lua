@@ -164,7 +164,6 @@ do --Server interval timer
 	function EverydayResetter()
 		print"daily reset"
 		ResetLocations()
-		Locations = {}
 		local timet = os.time()
 		local ct = os.date("*t",timet)
 		local nct = os.date("*t",timet)
