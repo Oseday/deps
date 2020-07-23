@@ -1,7 +1,8 @@
 {
- "name": "VerBiPati",
+ "name": "Ver Bi' Pati",
  "short_name": "VBP",
- "description": "VerBiPati klübü web uygulaması.",
+ "description": "VerBiPati kulübü web uygulaması.",
+ "display": "standalone",
  "start_url": "/viewer",
  "icons": [
   {
