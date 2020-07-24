@@ -109,6 +109,7 @@
         <script src="/jquery.js" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript.util/0.12.12/javascript.util.min.js" type="text/javascript"></script>
         <script src="/jscookies.js" type="text/javascript"></script>
+        <script src="/getbrowser.js" type="text/javascript"></script>
         <script type="text/javascript">
             window.scrollTo(0,1);
 
@@ -319,6 +320,12 @@
                 timeout:4000,
                 maximumAge:10000,
                 enableHighAccuracy: true
+            }
+
+            if (isFirefox){
+                geoOptions.enableHighAccuracy = false;
+                geoOptions.timeout = 10000;
+                geoOptions.maximumAge = 20000;
             }
 
             function Tracker(geoloc) {
