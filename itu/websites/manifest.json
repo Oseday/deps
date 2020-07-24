@@ -5,7 +5,10 @@
  "display": "standalone",
  "start_url": "/viewer",
  "background_color": "white",
- "theme_color": "blue",
+ "theme_color": "blue",   
+ "orientation": "any",
+  "lang": "Turkish",
+
  "icons": [
   {
    "src": "/android-icon-36x36.png",
@@ -35,7 +38,8 @@
    "src": "/android-icon-144x144.png",
    "sizes": "144x144",
    "type": "image/png",
-   "density": "3.0"
+   "density": "3.0",
+   "purpose": "any maskable"
   },
   {
    "src": "/android-icon-192x192.png",
