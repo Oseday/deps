@@ -103,7 +103,7 @@
             <div style="padding-bottom: 0px">Besleme yaptığınız yerde işaretleyip orayı oradayken kaydedin böylece nerede ve ne zaman besleme yaptığınızı teyit edebilelim.</div>
             <div style="padding-bottom: 5px"> <button class="btn btn-sm btn-link" type="button" id="signout">Çıkış</button> </div>
         </div>
-        
+
         <script src="/jquery.js" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript.util/0.12.12/javascript.util.min.js" type="text/javascript"></script>
         <script src="/jscookies.js" type="text/javascript"></script>
@@ -307,7 +307,8 @@
                 */
             }
 
-            function geoError() {
+            function geoError(err) {
+                console.warn(err);
                 $("#gettinglocation").hide();
                 $("#location-get-error").show();
             }
