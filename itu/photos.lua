@@ -61,7 +61,7 @@ function module.setupServer(server)
 		if not req.files then res:send("no file sent",400) end
 		if not req.files.photo then res:send("file sent was not a photo",400) end
 		p(req.files.photo.name)
-		p(req.handlers.data())
+		p(req.handlers.data[1]())
 		--req.handlers.data
 		res:send("",200)
 	end)
