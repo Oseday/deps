@@ -22,7 +22,7 @@ function module.setupServer(Server,MoonCake)
 	Server:get("/admin/editlocation/:locationid",function(req, res) res:sendFile(ITUDir.."/admin/editlocation.html") end)
 
 	StaticFS.addstatic(ITUDir.."/","/")
-	StaticFS.addstatic(_G.EXECPATH.."itu/photos/","/photos")
+	StaticFS.addstatic(_G.EXECPATH.."itu/photos","/photos")
 
 	----StaticFS.addstatic(_G.EXECPATH.."ssl-certs/","/.well-known/acme-challenge")
 	----StaticFS.addstatic(_G.EXECPATH.."zerossl/","/.well-known/acme-challenge")
