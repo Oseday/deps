@@ -85,8 +85,11 @@ function module.setupServer(server)
 		p(req.files.photo.path)
 		coroutine.wrap(function()
 
-			p(addphoto(locname,"testanimal",req.files.photo.name,req.files.photo.path))
-
+			local succ,notf,code = addphoto(locname, "testanimal", req.files.photo.name, req.files.photo.path)
+			if not succ then
+				p("ERROR:",notf)
+				res:send(notf,code)
+			end
 			--[[local err,notf = fs.renameSync(req.files.photo.path, PhotoDir..locname..OSS..req.files.photo.name)
 			if err==nil then
 				p("ERROR:",notf)
