@@ -48,6 +48,8 @@ function TableToLoadstringFormat(t)
 	return "return "..TableToString(t)
 end
 
+local PhotoDir = _G.EXECPATH .. "photo/"
+
 local Photos = {}
 
 function addphoto(locname,animalname,dir)
@@ -60,11 +62,12 @@ function module.setupServer(server)
 		local locname = req.params.locname
 		if not req.files then res:send("no file sent",400) end
 		if not req.files.photo then res:send("file sent was not a photo",400) end
-		p(req)
-		p(req.files.photo.name)
-		p(req.handlers.data[1]())
-		--req.handlers.data
-		res:send("",200)
+		p(req.files.photo.name) --writes to the temp file at photo.path , we can just move the temp file to the new location
+		p(req.files.photo.path)
+		coroutine.wrap(function()
+			fs.renameSync(req.files.photo.path, PhotoDir..req.files.photo.name)
+			res:send("",200)
+		end)()
 	end)
 end
 
