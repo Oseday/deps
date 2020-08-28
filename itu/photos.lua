@@ -25,7 +25,7 @@ local function OSSd(...)
 	return s
 end
 
-function direxists(dir) 
+--[[function direxists(dir) 
 	return os.execute("[ -d itu"..OSS..dir.." ]")==true
 end
 
@@ -35,7 +35,7 @@ end
 
 function removedir(dir)
 	return os.execute("rm -rf itu"..OSS..dir)
-end
+end]]
 
 local function TableToString(t)
 	local s = "{"
@@ -56,55 +56,64 @@ function TableToLoadstringFormat(t)
 	return "return "..TableToString(t)
 end
 
+local ITUDir = _G.EXECPATH .. "deps/ose/itu/websites"
 local PhotoDir = _G.EXECPATH ..OSS.. "itu" ..OSS.. "photos" ..OSS
-
-if not direxists("photos") then
-	makedir("photos")
-end
 
 local Photos = {}
 
 function addphoto(locname,animalname,photoname,tempdir)
 	local loc = PhotoDir..locname
-	--if not direxists(loc) then makedir(loc) print("makedir",loc)else print("nomakedir",loc) end
 	p(fs.mkdir(loc))
 	local aniloc = loc..OSS..animalname
 	p(fs.mkdir(aniloc))
-	--if not direxists(aniloc) then makedir(aniloc) print("makedir",aniloc)else print("nomakedir",aniloc) end
+
+	if not Photos[locname] then Photos[locname]={} end
+	if not Photos[locname][animalname] then Photos[locname][animalname]={} end
+	
+	table.insert(Photos[locname][animalname],photoname)
 
 	local err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
 	if err == nil then return false,notf,500 end
-
+	return true,"success",200
 end
 
 
 function module.setupServer(server)
+	server:get("/photos/:locname", function(req, res)
+		local locname = req.params.locname
+		res:sendFile(ITUDir .. "/photosviewer.html")
+	end)
+
 	server:post("/photos/:locname", function(req, res)
 		local locname = req.params.locname
 		if not req.files then res:send("no file sent",400) end
 		if not req.files.photo then res:send("file sent was not a photo",400) end
-		p(req.files.photo.name) --writes to the temp file at photo.path , we can just move the temp file to the new location
-		p(req.files.photo.path)
 		coroutine.wrap(function()
-
 			local succ,notf,code = addphoto(locname, "testanimal", req.files.photo.name, req.files.photo.path)
 			if not succ then
 				p("ERROR:",notf)
 				return res:send(notf,code)
 			end
-			--[[local err,notf = fs.renameSync(req.files.photo.path, PhotoDir..locname..OSS..req.files.photo.name)
-			if err==nil then
-				p("ERROR:",notf)
-				makedir(PhotoDir..locname)
-				err,notf = fs.renameSync(req.files.photo.path, PhotoDir..locname..OSS..req.files.photo.name)
-				if err==nil then
-					p("FATAL ERROR:",notf)
-					res:send(notf,500)
-				end
-			end]]
-			p(PhotoDir..locname..OSS..req.files.photo.name)
+
 			res:send("",200)
 		end)()
+	end)
+
+	server:delete("/photos/:locname/:animalname/:photoname", function(req, res)
+		local locname = req.params.locname
+		local animalname = req.params.animalname
+		local photoname = req.params.photoname
+		fs.unlink(PhotoDir..locname..OSS.animalname..OSS..photoname,function()end)
+		res:send("",200)
+	end)
+
+	server:post("/photosmeta/:locname", function(req, res)
+		local locname = req.params.locname
+		if Photos[locname] then
+			res:json(Photos[locname],200)
+		else
+			res:json({},200)
+		end
 	end)
 end
 
