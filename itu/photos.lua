@@ -56,7 +56,7 @@ function TableToLoadstringFormat(t)
 	return "return "..TableToString(t)
 end
 
-local ITUDir = _G.EXECPATH .. "deps/ose/itu/websites"
+local ITUDir = _G.EXECPATH .. OSS.."deps/ose/itu/websites"
 local PhotoDir = _G.EXECPATH ..OSS.. "itu" ..OSS.. "photos" ..OSS
 
 local Photos = {}
