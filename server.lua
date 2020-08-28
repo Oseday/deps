@@ -6,6 +6,7 @@ require"ose/server"
 local CORS = require"ose/CORS"
 
 local Tracker = require"ose/itu/tracker"
+local Photos = require"ose/itu/photos"
 local WebsiteHandle = require"ose/itu/websitehandle"
 
 local isHttps = false
@@ -33,6 +34,8 @@ function Setup(Server,port)
 	WebsiteHandle.setupServer(Server,MoonCake)
 
 	Tracker.setupServer(Server)
+
+	Photos.setupServer(Server)
 
 	Server:start(port,ip)
 end

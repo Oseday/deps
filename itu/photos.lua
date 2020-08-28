@@ -57,8 +57,8 @@ end
 
 function module.setupServer(server)
 	server:post("/photos/:locname", function(req, res)
-		local username = req.params.locname
-		
+		local locname = req.params.locname
+		p(locname)
 		p(req.body)
 	end)
 end
