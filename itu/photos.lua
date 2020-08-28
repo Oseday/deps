@@ -64,13 +64,13 @@ end
 
 local Photos = {}
 
-function addphoto(locname,animalname,tempdir)
+function addphoto(locname,animalname,photoname,tempdir)
 	local loc = PhotoDir..locname
 	if not direxists(loc) then makedir(loc) end
 	local aniloc = loc..OSS..animalname
 	if not direxists(aniloc) then makedir(aniloc) end
 
-	local err,notf = fs.renameSync(tempdir, aniloc..OSS..req.files.photo.name)
+	local err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
 	if err == nil then return false,notf,500 end
 
 end
@@ -85,7 +85,7 @@ function module.setupServer(server)
 		p(req.files.photo.path)
 		coroutine.wrap(function()
 
-			p(addphoto(locname,"testanimal",req.files.photo.path))
+			p(addphoto(locname,"testanimal",req.files.photo.name,req.files.photo.path))
 
 			--[[local err,notf = fs.renameSync(req.files.photo.path, PhotoDir..locname..OSS..req.files.photo.name)
 			if err==nil then
