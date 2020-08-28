@@ -66,8 +66,15 @@ function module.setupServer(server)
 		p(req.files.photo.path)
 		coroutine.wrap(function()
 			local err,notf = fs.renameSync(req.files.photo.path, PhotoDir..locname..OSS..req.files.photo.name)
-			p(err,notf)
-			--if err then p(err,notf) res:send("",500) end
+			if err==nil then
+				p("ERROR:",notf)
+				makedir(PhotoDir..locname)
+				err,notf = fs.renameSync(req.files.photo.path, PhotoDir..locname..OSS..req.files.photo.name)
+				if err==nil then
+					p("FATAL ERROR:",notf)
+					res:send(notf,500)
+				end
+			end
 			p(PhotoDir..locname..OSS..req.files.photo.name)
 			res:send("",200)
 		end)()
