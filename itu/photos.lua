@@ -60,6 +60,7 @@ function module.setupServer(server)
 		local locname = req.params.locname
 		p(locname)
 		p(req.body)
+		res:send("",200)
 	end)
 end
 
