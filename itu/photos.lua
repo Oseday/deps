@@ -59,7 +59,11 @@ end
 local ITUDir = _G.EXECPATH .. OSS.."deps/ose/itu/websites"
 local PhotoDir = _G.EXECPATH ..OSS.. "itu" ..OSS.. "photos" ..OSS
 
-local Photos = {}
+local Photos = {
+	test={
+		testanimal={"Kgo0bOfbHO.png","JH0SWGSwsd.png"}
+	}
+}
 
 function addphoto(locname,animalname,photoname,tempdir)
 	local loc = PhotoDir..locname
