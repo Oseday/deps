@@ -65,7 +65,8 @@ function module.setupServer(server)
 		p(req.files.photo.name) --writes to the temp file at photo.path , we can just move the temp file to the new location
 		p(req.files.photo.path)
 		coroutine.wrap(function()
-			fs.renameSync(req.files.photo.path, PhotoDir..locname..OSS..req.files.photo.name)
+			local err,notf = fs.renameSync(req.files.photo.path, PhotoDir..locname..OSS..req.files.photo.name)
+			if err then p(err,notf) res:send("",500) end
 			p(PhotoDir..locname..OSS..req.files.photo.name)
 			res:send("",200)
 		end)()
