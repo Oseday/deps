@@ -48,7 +48,7 @@ function TableToLoadstringFormat(t)
 	return "return "..TableToString(t)
 end
 
-local PhotoDir = _G.EXECPATH .. "photo/"
+local PhotoDir = _G.EXECPATH .. OSS.."photo"..OSS
 
 local Photos = {}
 
