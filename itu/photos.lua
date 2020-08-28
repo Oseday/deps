@@ -60,6 +60,7 @@ function module.setupServer(server)
 		local locname = req.params.locname
 		if not req.files then res:send("no file sent",400) end
 		if not req.files.photo then res:send("file sent was not a photo",400) end
+		p(req)
 		p(req.files.photo.name)
 		p(req.handlers.data[1]())
 		--req.handlers.data
