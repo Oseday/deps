@@ -66,9 +66,11 @@ local Photos = {}
 
 function addphoto(locname,animalname,photoname,tempdir)
 	local loc = PhotoDir..locname
-	if not direxists(loc) then makedir(loc) print("makedir",loc)else print("nomakedir",loc) end
+	--if not direxists(loc) then makedir(loc) print("makedir",loc)else print("nomakedir",loc) end
+	p(fs.mkdir(loc))
 	local aniloc = loc..OSS..animalname
-	if not direxists(aniloc) then makedir(aniloc) print("makedir",aniloc)else print("nomakedir",aniloc) end
+	p(fs.mkdir(aniloc))
+	--if not direxists(aniloc) then makedir(aniloc) print("makedir",aniloc)else print("nomakedir",aniloc) end
 
 	local err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
 	if err == nil then return false,notf,500 end
