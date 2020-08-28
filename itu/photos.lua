@@ -66,9 +66,9 @@ local Photos = {}
 
 function addphoto(locname,animalname,photoname,tempdir)
 	local loc = PhotoDir..locname
-	if not direxists(loc) then makedir(loc) end
+	if not direxists(loc) then makedir(loc) print("makedir",loc)else print("nomakedir",loc) end
 	local aniloc = loc..OSS..animalname
-	if not direxists(aniloc) then makedir(aniloc) end
+	if not direxists(aniloc) then makedir(aniloc) print("makedir",aniloc)else print("nomakedir",aniloc) end
 
 	local err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
 	if err == nil then return false,notf,500 end
@@ -88,7 +88,7 @@ function module.setupServer(server)
 			local succ,notf,code = addphoto(locname, "testanimal", req.files.photo.name, req.files.photo.path)
 			if not succ then
 				p("ERROR:",notf)
-				res:send(notf,code)
+				return res:send(notf,code)
 			end
 			--[[local err,notf = fs.renameSync(req.files.photo.path, PhotoDir..locname..OSS..req.files.photo.name)
 			if err==nil then
