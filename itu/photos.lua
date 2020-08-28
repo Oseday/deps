@@ -58,9 +58,11 @@ end
 function module.setupServer(server)
 	server:post("/photos/:locname", function(req, res)
 		local locname = req.params.locname
-		p(locname)
-		p(req)
-		p(req.body)
+		if not req.files then res:send("no file sent",400) end
+		if not req.files.photo then res:send("file sent was not a photo",400) end
+		p(req.files.photo.name)
+		p(req.handlers.data)
+		--req.handlers.data
 		res:send("",200)
 	end)
 end
