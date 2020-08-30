@@ -110,7 +110,7 @@ function deletephoto(locid,animalname,photoname)
 
 	if #(Photos[locid][animalname]) == 0 then 
 		Photos[locid][animalname] = nil 
-		fs.rmdir(PhotoDir..locid..OSS.animalname,function()end) 
+		fs.rmdir(PhotoDir..locid..OSS..animalname,function()end) 
 	end
 
 	SaveTable(Photos,"photosmeta")
