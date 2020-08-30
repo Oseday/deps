@@ -133,7 +133,7 @@
 				
 			</div>
 
-			<a class="btn btn-outline-dark btn-sm" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="${animalname}">Yeni Hayvan +</a>
+			<a class="btn btn-outline-dark btn-sm" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="">Yeni Hayvan +</a>
 
 	</body>
 
@@ -153,9 +153,6 @@
 			});
 			$grid.masonry();
 
-			var currentanimalname = "";
-
-
 			let hrefsplit = window.location.href.split("/")
 			let locname = "test"//hrefsplit[hrefsplit.length-1]
 			console.log(locname)
@@ -168,7 +165,7 @@
 					try {
 						let formData = new FormData();
 						formData.append("photo", inp.files[i]);
-						let r = await fetch('https://verbipati.org/photos/test', {method: "POST", body: formData, 
+						let r = await fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST", body: formData, 
 						observe(observer) { 
 							observer.onresponseprogress = e => console.log(e);
 							observer.onrequestprogress = e => console.log(e);
@@ -183,12 +180,13 @@
 
 
 			$('#fileupload').click(function(argument) {
+				let aniname = $('#animalnameinput').val();
+				if (aniname.length<3){
+					$("#animalnameinput").toggleClass("is-invalid", true);
+				}
 				SavePhoto($('#fileinput')[0]);
 			})
 
-
-
-			var locationDataP;
 
 			function GetLocText(rowData,coords) {
 				let locationName = rowData[0]
@@ -202,7 +200,6 @@
 			function UpdateForm(data,coords){
 				//console.log(data)
 				$("#lists").empty();
-				locationDataP = data;
 				for(let [animalname, rowData] of Object.entries(data)){
 
 					let str = "";
