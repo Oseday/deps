@@ -67,6 +67,10 @@ function LoadTable(tab,path)
 	end
 end
 
+local acceptedformats = {
+	png=true,jpg=true,pneg=true,svg=true,jpeg=true,tif=true,tiff=true,ep=true,pdf=true,eps=true,ai=true,psd=true,indd=true,gif=true,giff=true
+}
+
 local ITUDir = _G.EXECPATH .. OSS.."deps/ose/itu/websites"
 local PhotoDir = _G.EXECPATH ..OSS.. "itu" ..OSS.. "photos" ..OSS
 
@@ -79,6 +83,9 @@ local Photos = {
 LoadTable(Photos,"photosmeta")
 
 function addphoto(locid,animalname,photoname,tempdir)
+	local exten = photoname:match(".%w*$"):sub(2)
+	if not acceptedformats[exten] then return false,"not an accepted format",400 end
+
 	local loc = PhotoDir..locid
 	fs.mkdir(loc)
 	local aniloc = loc..OSS..animalname
