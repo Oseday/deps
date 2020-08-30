@@ -102,7 +102,7 @@ function deletephoto(locid,animalname,photoname)
 	local t,b = Photos[locid][animalname]
 	local f = 0
 	for i,v in pairs(t) do
-		if v==photoname then Photos[locid][animalname][i]=nil b=v break end
+		if v==photoname then Photos[locid][animalname][i]=nil b=v end
 	end
 	if not b then return false,"no such photo exists",403 end
 
