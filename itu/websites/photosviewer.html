@@ -271,16 +271,6 @@
 				UPLOADING = false;
 			}
 
-			function A2U(str) {
-				var reserved = '';
-
-				for (var i = 0; i < str.length; i++) {
-					reserved += '&#' + str.charCodeAt(i) + ';';
-				}
-
-				return reserved;
-			}
-
 
 			$('#fileupload').click(function(argument) {
 				let aniname = $('#animalnameinput').val();
@@ -295,8 +285,8 @@
 				document.location.href = $("#PhotoModalsrc").attr("src");
 			})
 
-			$('#PhotoModaldel').click(async function(){ //fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST"
-				await fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})
+			$('#PhotoModaldel').click(async function(){
+				try{await fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})}
 				GetForm();
 				$('#PhotoModal').modal("hide");
 			})
@@ -308,7 +298,6 @@
 				return `<d>${locationName}<i><small>  ${details} </small></i></d>`
 			}
 //cd deps/ose && git pull origin master && cd ../.. && sudo ./luvit server.lua
-//<div class="progress progress-extra" hidden><div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div></div>
 
 			function UpdateForm(data,coords){
 				$("#lists").empty();
