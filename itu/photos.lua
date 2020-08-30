@@ -110,12 +110,18 @@ function deletephoto(locname,animalname,photoname)
 	if not Photos[locname] or not Photos[locname][animalname] then return false,"no such loc-animal exists",403 end
 
 	local t,b = Photos[locname][animalname]
+	local f = 0
 	for i,v in pairs(t) do
 		if v==photoname then Photos[locname][animalname][i]=nil b=v break end
 	end
 	if not b then return false,"no such photo exists",403 end
 
 	fs.unlink(PhotoDir..locname..OSS.animalname..OSS..photoname,function()end)
+
+	if #(Photos[locname][animalname]) == 0 then 
+		Photos[locname][animalname] = nil 
+		fs.rmdir(PhotoDir..locname..OSS.animalname,function()end) 
+	end
 
 	SaveTable(Photos,"photosmeta")
 end
