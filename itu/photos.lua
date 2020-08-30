@@ -120,6 +120,10 @@ function deletephoto(locname,animalname,photoname)
 	SaveTable(Photos,"photosmeta")
 end
 
+local function strlower(s)
+	return s:gsub("İ","i"):gsub("Ğ","ğ"):gsub("I","ı"):gsub("Ş","ş"):gsub("Ç","ç"):gsub("Ö","ö"):gsub("Ü","ü"):lower()
+end
+
 
 function module.setupServer(server)
 	server:get("/photos/:locname", function(req, res)
@@ -127,12 +131,13 @@ function module.setupServer(server)
 		res:sendFile(ITUDir .. "/photosviewer.html")
 	end)
 
-	server:post("/photos/:locname", function(req, res)
+	server:post("/photos/:locname/:animalname", function(req, res)
 		local locname = req.params.locname
+		local animalname = strlower(req.params.animalname)
 		if not req.files then res:send("no file sent",400) end
 		if not req.files.photo then res:send("file sent was not a photo",400) end
 		coroutine.wrap(function()
-			local succ,notf,code = addphoto(locname, "testanimal", req.files.photo.name, req.files.photo.path)
+			local succ,notf,code = addphoto(locname, animalname, req.files.photo.name, req.files.photo.path)
 			if not succ then
 				p("ERROR:",notf)
 				return res:send(notf,code)
