@@ -146,15 +146,15 @@
 							<input type="name" style="margin-bottom: 8px;" class="form-control" id="animalnameinput" placeholder="Hayvan adı" name="animalname-2"></input>
 							<div class="input-group">
 							  <div class="input-group-prepend">
-							    <button class="input-group-text" id="fileupload">Yükle</button>
+								<button class="input-group-text" id="fileupload">Yükle</button>
 							  </div>
 							  <div class="custom-file">
-							    <input type="file" class="custom-file-input" id="fileinput" accept="image/*" aria-describedby="fileupload"></input>
-							    <label class="custom-file-label text-left" for="fileinput">Fotoğraf seçin</label>
+								<input type="file" class="custom-file-input" id="fileinput" accept="image/*" aria-describedby="fileupload"></input>
+								<label class="custom-file-label text-left" for="fileinput">Fotoğraf seçin</label>
 							  </div>
 							</div>
 
-							<div class="progress progress-extra"><div class="progress-bar" role="progressbar" id="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div></div>
+							<div class="progress progress-extra"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" id="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>
 						</div>
 					</div>
 				</div>
@@ -225,17 +225,20 @@
 						let formData = new FormData();
 						formData.append("photo", inp.files[i]);
 
+						$("#progressbar").fadeIn(120);
+
 						axios.request({
 							method: "POST",
 							url:`https://verbipati.org/photos/${locname}/${aniname}`,
 							data: formData,
 							onUploadProgress: (p) => {
-					          console.log(p); 
-					          //this.setState({
-					            //fileprogress: p.loaded / p.total
-					          //})
-					        }
-						}).then(data => {GetForm();})
+								console.log(p.loaded / p.total); 
+								$("#progressbar")[0].width = (p.loaded / p.total) + "%"
+							}
+						}).then(data => {
+							$("#progressbar").fadeOut(120);
+							GetForm();
+						})
 
 
 						/*let r = await fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST", body: formData, 
@@ -253,13 +256,13 @@
 			}
 
 			function A2U(str) {
-			    var reserved = '';
+				var reserved = '';
 
-			    for (var i = 0; i < str.length; i++) {
-			        reserved += '&#' + str.charCodeAt(i) + ';';
-			    }
+				for (var i = 0; i < str.length; i++) {
+					reserved += '&#' + str.charCodeAt(i) + ';';
+				}
 
-			    return reserved;
+				return reserved;
 			}
 
 
@@ -279,6 +282,7 @@
 			$('#PhotoModaldel').click(async function(){ //fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST"
 				await fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})
 				GetForm();
+				$('#PhotoModal').modal("hide");
 			})
 
 			function GetLocText(rowData,coords) {
@@ -297,7 +301,7 @@
 							<div class="animal-container">
 								<h3 class="text-center text-capitalize">${decodeURI(animalname)} <a class="btn btn-outline-dark btn-sm" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="${animalname}">+</a> </h3> 
 								<div class="container-fluid no-padding">
-								  	<div class="grid">
+									<div class="grid">
 										<div class="grid-sizer"></div>`;
 
 					for(let [_, animalphoto] of Object.entries(rowData)){		
