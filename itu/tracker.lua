@@ -89,6 +89,7 @@ local Locations = {
 	]]
 }
 
+
 function ResetLocations()
 	for k,v in pairs(Locations) do
 		Locations[k].checked = false
@@ -102,6 +103,9 @@ end
 local IDtoLoc = {}
 
 local genids = {}
+
+module.Locations = Locations
+module.IDtoLoc = IDtoLoc
 
 function newLocation(locationname, details, lat, long, id)
 	id = id or rndid(genids)
@@ -206,7 +210,27 @@ function module.setupServer(server)
 
 			local isDisabled = not( (occupancy == "") or (occupancy == req.body.username) )
 
-			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date, tab.details, tab.dist, tab.pos}
+			t[#t+1]={Location, isChecked, isDisabled, (occupancy~="") and Users[occupancy].fullname or "", tab.date, tab.details, tab.dist, tab.pos, tab.id}
+		end
+		res:json(t,200)
+	end)
+
+
+	server:post("/viewer/tabledata-v2", function(req, res)
+		req.body.username = req.body.username or ""
+		local t = {}
+		for Location,tab in pairs(Locations) do
+			t[#t+1]={
+				loc=Location,
+				checked=tab.checked,
+				disabled=not( (occupancy == "") or (occupancy == req.body.username) ),
+				occupancy=(occupancy~="") and Users[occupancy].fullname or "",
+				date=tab.date,
+				details=tab.details,
+				dist=tab.dist,
+				pos=tab.pos,
+				id=tab.id,
+			}
 		end
 		res:json(t,200)
 	end)

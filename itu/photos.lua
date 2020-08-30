@@ -15,6 +15,8 @@ local quickio = require"ose/quickio"
 local pafix = require"ose/pafix"
 local rndid = require"ose/rndid"
 
+local Tracker = require"ose/itu/tracker"
+
 local OSS = jit.os=="Windows" and "\\" or "/"
 
 local function OSSd(...)
@@ -24,18 +26,6 @@ local function OSSd(...)
 	end
 	return s
 end
-
---[[function direxists(dir) 
-	return os.execute("[ -d itu"..OSS..dir.." ]")==true
-end
-
-function makedir(dir)
-	return os.execute("mkdir itu"..OSS..dir)
-end
-
-function removedir(dir)
-	return os.execute("rm -rf itu"..OSS..dir)
-end]]
 
 local function TableToString(t)
 	local s = "{"
@@ -88,16 +78,16 @@ local Photos = {
 
 LoadTable(Photos,"photosmeta")
 
-function addphoto(locname,animalname,photoname,tempdir)
-	local loc = PhotoDir..locname
+function addphoto(locid,animalname,photoname,tempdir)
+	local loc = PhotoDir..locid
 	fs.mkdir(loc)
 	local aniloc = loc..OSS..animalname
 	fs.mkdir(aniloc)
 
-	if not Photos[locname] then Photos[locname]={} end
-	if not Photos[locname][animalname] then Photos[locname][animalname]={} end
+	if not Photos[locid] then Photos[locid]={} end
+	if not Photos[locid][animalname] then Photos[locid][animalname]={} end
 	
-	table.insert(Photos[locname][animalname], photoname)
+	table.insert(Photos[locid][animalname], photoname)
 
 	SaveTable(Photos,"photosmeta")
 
@@ -106,21 +96,21 @@ function addphoto(locname,animalname,photoname,tempdir)
 	return true,"success",200
 end
 
-function deletephoto(locname,animalname,photoname)
-	if not Photos[locname] or not Photos[locname][animalname] then return false,"no such loc-animal exists",403 end
+function deletephoto(locid,animalname,photoname)
+	if not Photos[locid] or not Photos[locid][animalname] then return false,"no such loc-animal exists",403 end
 
-	local t,b = Photos[locname][animalname]
+	local t,b = Photos[locid][animalname]
 	local f = 0
 	for i,v in pairs(t) do
-		if v==photoname then Photos[locname][animalname][i]=nil b=v break end
+		if v==photoname then Photos[locid][animalname][i]=nil b=v break end
 	end
 	if not b then return false,"no such photo exists",403 end
 
-	fs.unlink(PhotoDir..locname..OSS.animalname..OSS..photoname,function()end)
+	fs.unlink(PhotoDir..locid..OSS.animalname..OSS..photoname,function()end)
 
-	if #(Photos[locname][animalname]) == 0 then 
-		Photos[locname][animalname] = nil 
-		fs.rmdir(PhotoDir..locname..OSS.animalname,function()end) 
+	if #(Photos[locid][animalname]) == 0 then 
+		Photos[locid][animalname] = nil 
+		fs.rmdir(PhotoDir..locid..OSS.animalname,function()end) 
 	end
 
 	SaveTable(Photos,"photosmeta")
@@ -132,18 +122,18 @@ end
 
 
 function module.setupServer(server)
-	server:get("/photos/:locname", function(req, res)
-		local locname = req.params.locname
+	server:get("/photos/:locid", function(req, res)
+		local locid = req.params.locid
 		res:sendFile(ITUDir .. "/photosviewer.html")
 	end)
 
-	server:post("/photos/:locname/:animalname", function(req, res)
-		local locname = req.params.locname
+	server:post("/photos/:locid/:animalname", function(req, res)
+		local locid = req.params.locid
 		local animalname = strlower(req.params.animalname)
 		if not req.files then res:send("no file sent",400) end
 		if not req.files.photo then res:send("file sent was not a photo",400) end
 		coroutine.wrap(function()
-			local succ,notf,code = addphoto(locname, animalname, req.files.photo.name, req.files.photo.path)
+			local succ,notf,code = addphoto(locid, animalname, req.files.photo.name, req.files.photo.path)
 			if not succ then
 				p("ERROR:",notf)
 				return res:send(notf,code)
@@ -153,12 +143,12 @@ function module.setupServer(server)
 		end)()
 	end)
 
-	server:delete("/photos/:locname/:animalname/:photoname", function(req, res)
-		local locname = req.params.locname
+	server:delete("/photos/:locid/:animalname/:photoname", function(req, res)
+		local locid = req.params.locid
 		local animalname = req.params.animalname
 		local photoname = req.params.photoname
 
-		local succ,notf,code = deletephoto(locname,animalname,photoname)
+		local succ,notf,code = deletephoto(locid,animalname,photoname)
 		if not succ then
 			p("ERROR:",notf)
 			return res:send(notf,code)
@@ -167,10 +157,10 @@ function module.setupServer(server)
 		res:send("",200)
 	end)
 
-	server:post("/photosmeta/:locname", function(req, res)
-		local locname = req.params.locname
-		if Photos[locname] then
-			res:json(Photos[locname],200)
+	server:post("/photosmeta/:locid", function(req, res)
+		local locid = req.params.locid
+		if Photos[locid] then
+			res:json(Photos[locid],200)
 		else
 			res:json({},200)
 		end
