@@ -276,6 +276,7 @@
 				let aniname = $('#animalnameinput').val();
 				if (aniname.length<3){
 					$("#animalnameinput").toggleClass("is-invalid", true);
+					return;
 				}
 				SavePhoto($('#fileinput')[0]);
 			})

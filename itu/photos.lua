@@ -83,6 +83,8 @@ local Photos = {
 LoadTable(Photos,"photosmeta")
 
 function addphoto(locid,animalname,photoname,tempdir)
+	if animalname:len()<3 then return false,"animal name not long enough",400 end
+
 	local exten = photoname:match(".%w*$"):sub(2)
 	if not acceptedformats[exten] then return false,"not an accepted format",400 end
 
