@@ -233,7 +233,8 @@
 							data: formData,
 							onUploadProgress: (p) => {
 								console.log(p.loaded / p.total); 
-								$("#progressbar")[0].width = (p.loaded / p.total) + "%"
+								//$("#progressbar")[0].width = (p.loaded / p.total) + "%"
+								$("#progressbar").attr("style",`width: ${p.loaded / p.total}%`);
 							}
 						}).then(data => {
 							$("#progressbar").fadeOut(120);
