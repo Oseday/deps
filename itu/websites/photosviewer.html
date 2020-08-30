@@ -239,7 +239,7 @@
 							onUploadProgress: (p) => {
 								console.log(p.loaded / p.total); 
 								//$("#progressbar")[0].width = (p.loaded / p.total) + "%"
-								$("#progressbar").attr("style",`width: ${p.loaded / p.total}%`);
+								$("#progressbar").attr("style",`width: ${100 * p.loaded / p.total}%`);
 							}
 						}).then(data => {
 							$("#progressparent").slideUp(120);
