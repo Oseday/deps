@@ -142,7 +142,7 @@
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="AniAddModalLabel">Fotoğraf Ekle</h5>
+							<h6 class="modal-title" id="AniAddModalLabel">Fotoğraf Ekle</h6>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
@@ -304,7 +304,7 @@
 				for(let [animalname, rowData] of Object.entries(data)){
 					let trs = `
 							<div class="animal-container">
-								<h3 class="text-center text-capitalize">${decodeURI(animalname)} <a class="btn btn-outline-dark btn-sm" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="${animalname}">+</a> </h3> 
+								<h5 class="text-center text-capitalize">${decodeURI(animalname)} <a class="btn btn-outline-dark btn-sm no-padding" style="height: 24px; width: 24px;" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="${animalname}">+</a> </h5> 
 								<div class="container-fluid no-padding">
 									<div class="grid">
 										<div class="grid-sizer"></div>`;
@@ -355,7 +355,8 @@
 			GetForm();
 
 			$.get(`https://verbipati.org/locnamefromid/${locname}`).done(function(data) {
-				$("locname").text(data)
+				console.log(data)
+				$("#locname").text(data)
 			})
 			
 
