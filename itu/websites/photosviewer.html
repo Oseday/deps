@@ -274,7 +274,7 @@
 
 			$('#PhotoModaldownload').click(function(argument) {
 				document.location.href = $("#PhotoModalsrc").attr("src");
-			}
+			})
 
 			$('#PhotoModaldel').click(function(){ //fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST"
 				await fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})
