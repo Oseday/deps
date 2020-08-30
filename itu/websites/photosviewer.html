@@ -200,6 +200,7 @@
 	<script src="https://verbipati.org/jscookies.js" type="text/javascript"></script>
 	<script src="https://verbipati.org/getbrowser.js" type="text/javascript"></script>
 	<script src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" type="text/javascript"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			var $grid = $('.grid').masonry({
@@ -212,6 +213,8 @@
 			let hrefsplit = window.location.href.split("/")
 			let locname = hrefsplit[hrefsplit.length-1]
 			console.log(locname)
+
+			const axios = require('axios');
 			
 			async function SavePhoto(inp) {
 				console.log(inp)
@@ -221,13 +224,28 @@
 					try {
 						let formData = new FormData();
 						formData.append("photo", inp.files[i]);
-						let r = await fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST", body: formData, 
+
+						axios.request({
+							method: "POST",
+							url:`https://verbipati.org/photos/${locname}/${aniname}`,
+							data: formData,
+							onUploadProgress: (p) => {
+					          console.log(p); 
+					          //this.setState({
+					            //fileprogress: p.loaded / p.total
+					          //})
+					        }
+						}).then(data => {GetForm();})
+
+
+						/*let r = await fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST", body: formData, 
 						observe(observer) { 
 							observer.onresponseprogress = e => console.log(e);
 							observer.onrequestprogress = e => console.log(e);
 							observer.onstatechange = n => console.log(observer.state)
-						}}); 
-						console.log('Upload HTTP response code:',r.status); 
+						}}); */
+						//console.log('Upload HTTP response code:',r.status); 
+						GetForm();
 					} catch(e) {
 						console.log('error:', e);
 					}
@@ -259,7 +277,8 @@
 			}
 
 			$('#PhotoModaldel').click(function(){ //fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST"
-				fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})
+				await fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})
+				GetForm();
 			})
 
 			function GetLocText(rowData,coords) {
@@ -272,15 +291,8 @@
 //<div class="progress progress-extra" hidden><div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div></div>
 
 			function UpdateForm(data,coords){
-				//console.log(data)
 				$("#lists").empty();
 				for(let [animalname, rowData] of Object.entries(data)){
-
-					let str = "";
-
-					console.log(animalname)
-					console.log(rowData)
-
 					let trs = `
 							<div class="animal-container">
 								<h3 class="text-center text-capitalize">${decodeURI(animalname)} <a class="btn btn-outline-dark btn-sm" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="${animalname}">+</a> </h3> 
@@ -321,12 +333,16 @@
 				})
 			}
 
-			$.post(`https://verbipati.org/photosmeta/${locname}`).done(function(data) {
-				UpdateForm(data)
-			}).fail(function(){
-				//document.location.href = "/viewer";
-			})
+			function GetForm() {
+				$.post(`https://verbipati.org/photosmeta/${locname}`).done(function(data) {
+					UpdateForm(data)
+				}).fail(function(){
+					//document.location.href = "/viewer";
+				})
+			}
 
+			GetForm();
+			
 
 		});
 	</script>
