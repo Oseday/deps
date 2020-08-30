@@ -407,6 +407,15 @@ function module.setupServer(server)
 		end
 		res:send("deleted",200)
 	end)
+
+
+	server:get("/locnamefromid/:locid", function(req, res)
+		local name = IDtoLoc[req.params.locid]
+		if not name then
+			res:send("no such location with that id",500)
+		end
+		res:send(name,200)
+	end)
 end
 
 

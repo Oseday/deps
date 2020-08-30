@@ -103,7 +103,7 @@ function deletephoto(locid,animalname,photoname)
 	local f = 0
 	for i,v in pairs(t) do
 		if v==photoname then 
-			Photos[locid][animalname][i]=Photos[locid][animalname][#Photos[locid][animalname]]
+			Photos[locid][animalname][i] = Photos[locid][animalname][#Photos[locid][animalname]]
 			Photos[locid][animalname][#Photos[locid][animalname]] = nil
 			b=v 
 		end

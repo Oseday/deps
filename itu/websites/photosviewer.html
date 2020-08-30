@@ -132,6 +132,7 @@
 	<body class="text-center" style="overflow-y: scroll">
 			<title>VerBiPati Fotoğraf Kataloğu</title>
 			<h1 class="text-center" id="greet">Fotoğraf Kataloğu</h1>
+			<h2 class="text-center text-capitalize" id="locname"></h2>
 
 			<div class="modal fade" id="UploadModal" tabindex="-1" role="dialog" aria-labelledby="AniAddModalLabel" aria-hidden="true">
 				<div class="modal-dialog" role="document">
@@ -216,6 +217,8 @@
 
 			//const axios = require('axios');
 
+
+			$("#progressparent").slideUp(120);
 			var UPLOADING = false;
 			
 			async function SavePhoto(inp) {
@@ -243,6 +246,7 @@
 							}
 						}).then(data => {
 							$("#progressparent").slideUp(120);
+							$("#progressbar").attr("style",`width: 0%`);
 							GetForm();
 						})
 
@@ -354,6 +358,10 @@
 			}
 
 			GetForm();
+
+			$.get(`https://verbipati.org/locnamefromid/${locname}`).done(function(data) {
+				$("locname").text(data)
+			})
 			
 
 		});
