@@ -286,7 +286,7 @@
 			})
 
 			$('#PhotoModaldel').click(async function(){
-				try{await fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})}
+				try{await fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})}catch(e){console.log('error:', e);}
 				GetForm();
 				$('#PhotoModal').modal("hide");
 			})
