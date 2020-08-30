@@ -76,7 +76,7 @@
 				background-color: #c0c0c0;
 				padding-top: 4px;
 				padding-bottom: 16px;
-				margin-bottom: 8px;
+				margin-bottom: 12px;
 			}
 
 			.no-padding{
@@ -90,6 +90,13 @@
 			.progress-extra{
 				margin-left: 28px;
 				margin-right: 28px;
+				margin-top: 16px;
+			}
+
+			.newanibtn{
+				margin-left: 28px;
+				margin-right: 28px;
+				margin-bottom: 16px;
 				margin-top: 16px;
 			}
 		</style>
@@ -117,7 +124,7 @@
 							    <button class="input-group-text" id="fileupload">Yükle</button>
 							  </div>
 							  <div class="custom-file">
-							    <input type="file" class="custom-file-input" id="fileinput" aria-describedby="fileupload"></input>
+							    <input type="file" class="custom-file-input" id="fileinput" accept="image/*" aria-describedby="fileupload"></input>
 							    <label class="custom-file-label text-left" for="fileinput">Fotoğraf seçin</label>
 							  </div>
 							</div>
@@ -133,7 +140,9 @@
 				
 			</div>
 
-			<a class="btn btn-outline-dark btn-sm" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="">Yeni Hayvan +</a>
+			<div class="newanibtn">
+				<a class="btn btn-outline-dark btn-lg btn-block" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="">Yeni Hayvan Ekle</a>
+			</div>
 
 	</body>
 
