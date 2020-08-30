@@ -223,8 +223,8 @@ function module.setupServer(server)
 			t[#t+1]={
 				loc=Location,
 				checked=tab.checked,
-				disabled=not( (occupancy == "") or (occupancy == req.body.username) ),
-				occupancy=(occupancy~="") and Users[occupancy].fullname or "",
+				disabled=not( (tab.username == "") or (tab.username == req.body.username) ),
+				occupancy=(tab.username~="") and Users[tab.username].fullname or "",
 				date=tab.date,
 				details=tab.details,
 				dist=tab.dist,
