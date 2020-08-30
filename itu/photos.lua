@@ -117,7 +117,7 @@ function deletephoto(locid,animalname,photoname)
 end
 
 local function strlower(s)
-	return s:gsub("İ","i"):gsub("Ğ","ğ"):gsub("I","ı"):gsub("Ş","ş"):gsub("Ç","ç"):gsub("Ö","ö"):gsub("Ü","ü"):lower()
+	return s--s:gsub("İ","i"):gsub("Ğ","ğ"):gsub("I","ı"):gsub("Ş","ş"):gsub("Ç","ç"):gsub("Ö","ö"):gsub("Ü","ü"):lower()
 end
 
 
