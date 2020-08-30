@@ -106,7 +106,7 @@ function deletephoto(locid,animalname,photoname)
 	end
 	if not b then return false,"no such photo exists",403 end
 
-	fs.unlink(PhotoDir..locid..OSS.animalname..OSS..photoname,function()end)
+	fs.unlink(PhotoDir..locid..OSS..animalname..OSS..photoname,function()end)
 
 	if #(Photos[locid][animalname]) == 0 then 
 		Photos[locid][animalname] = nil 
