@@ -103,13 +103,24 @@
 			.modal-dialog-full {
 			  width: 100%;
 			  height: 100%;
-			  margin: 0;
-			  padding: 1%;
+			  margin: 0px;
+			  margin-right: 0px;
+			  padding: 0.25%;
+			  max-width: 99999px;
 			}
 
 			.modal-content-full {
 			  height: auto;
+			  width: 100%;
 			  min-height: 100%;
+			}
+
+			.modal-body-full {
+			  padding: 2px;
+			}
+
+			.modal-c-image {
+				width: 100%;
 			}
 
 			.image-ose{}
@@ -150,7 +161,7 @@
 			</div>
 
 
-			<div class="modal fade" id="PhotoModal" tabindex="-1" role="dialog" aria-labelledby="PhotoModalLabel" aria-hidden="true">
+			<div class="modal fade" id="PhotoModal" tabindex="-2" role="dialog" aria-labelledby="PhotoModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-full" role="document">
 					<div class="modal-content modal-content-full">
 						<div class="modal-header">
@@ -159,8 +170,8 @@
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
-						<div class="modal-body">
-							<img id="" src="PhotoModalsrc"></div>
+						<div class="modal-body modal-body-full">
+							<img class="modal-c-image" id="PhotoModalsrc" src="https://via.placeholder.com/150"></div>
 							<div class="btn-group" role="group" aria-label="Basic example">
 								<button type="button" id="PhotoModaldel" data-animalname="" class="btn btn-danger btn-sm">Sil</button>
 								<button type="button" id="PhotoModaldownload" data-animalname="" class="btn btn-secondary btn-sm">İndir</button>
@@ -232,8 +243,8 @@
 				SavePhoto($('#fileinput')[0]);
 			})
 
-			$('#PhotoModaldel').click(function(){
-				console.log($(this).data("animalname"))
+			$('#PhotoModaldel').click(function(){ //fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST"
+				fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})
 			})
 
 			function GetLocText(rowData,coords) {
@@ -272,8 +283,12 @@
 				}
 
 				$('.image-ose').click(function(argument) {
-					$('#PhotoModalsrc').src = $(this).src;
-					$('#PhotoModaldel').data("animalname",$(this).data("animalname"));
+					//$('#PhotoModalsrc').src = $(this).src;
+					console.log($(this).attr("src"))
+					$('#PhotoModalsrc').attr("src",$(this).attr("src"));
+
+					console.log($(this).attr("data-animalname"))
+					$('#PhotoModaldel').attr("data-animalname",$(this).attr("data-animalname"));
 					$('#PhotoModal').modal("show");
 				})
 
