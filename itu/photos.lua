@@ -15,7 +15,12 @@ local quickio = require"ose/quickio"
 local pafix = require"ose/pafix"
 local rndid = require"ose/rndid"
 
-local vips = require"vips"
+local vips;
+if pcall(require,"vips") then 
+	vips = require"vips" 
+else
+	p("ERROR; vips could not be loaded")
+end
 
 local Tracker = require"ose/itu/tracker"
 
@@ -111,8 +116,9 @@ function addphoto(locid,animalname,photoname,tempdir)
 	local err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
 	if err == nil then return false,notf,500 end
 
-	vips.Image.thumbnail(aniloc..OSS..photoname, 350):write_to_file(anilocmin..OSS..photoname)
-
+	if vips then
+		vips.Image.thumbnail(aniloc..OSS..photoname, 350):write_to_file(anilocmin..OSS..photoname)
+	end
 
 	return true,"success",200
 end
