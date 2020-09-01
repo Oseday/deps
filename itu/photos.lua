@@ -15,6 +15,8 @@ local quickio = require"ose/quickio"
 local pafix = require"ose/pafix"
 local rndid = require"ose/rndid"
 
+local vips = require"vips"
+
 local Tracker = require"ose/itu/tracker"
 
 local OSS = jit.os=="Windows" and "\\" or "/"
@@ -73,6 +75,7 @@ local acceptedformats = {
 
 local ITUDir = _G.EXECPATH .. OSS.."deps/ose/itu/websites"
 local PhotoDir = _G.EXECPATH ..OSS.. "itu" ..OSS.. "photos" ..OSS
+local MinPhotoDir = _G.EXECPATH ..OSS.. "itu" ..OSS.. "minphotos" ..OSS
 
 local Photos = {
 	test={
@@ -93,6 +96,11 @@ function addphoto(locid,animalname,photoname,tempdir)
 	local aniloc = loc..OSS..animalname
 	fs.mkdir(aniloc)
 
+	local locmin = MinPhotoDir..locid
+	fs.mkdir(locmin)
+	local anilocmin = locmin..OSS..animalname
+	fs.mkdir(anilocmin)
+
 	if not Photos[locid] then Photos[locid]={} end
 	if not Photos[locid][animalname] then Photos[locid][animalname]={} end
 	
@@ -102,6 +110,10 @@ function addphoto(locid,animalname,photoname,tempdir)
 
 	local err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
 	if err == nil then return false,notf,500 end
+
+	vips.Image.thumbnail(aniloc..OSS..photoname, 350):write_to_file(anilocmin..OSS..photoname)
+
+
 	return true,"success",200
 end
 
@@ -120,10 +132,12 @@ function deletephoto(locid,animalname,photoname)
 	if not b then return false,"no such photo exists",403 end
 
 	fs.unlink(PhotoDir..locid..OSS..animalname..OSS..photoname,function()end)
+	fs.unlink(MinPhotoDir..locid..OSS..animalname..OSS..photoname,function()end)
 
 	if #(Photos[locid][animalname]) == 0 then 
 		Photos[locid][animalname] = nil 
 		fs.rmdir(PhotoDir..locid..OSS..animalname,function()end) 
+		fs.rmdir(MinPhotoDir..locid..OSS..animalname,function()end) 
 	end
 
 	SaveTable(Photos,"photosmeta")
