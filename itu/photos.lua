@@ -178,10 +178,27 @@ function module.setupServer(server)
 		end)()
 	end)
 
+	server:delete("/photos/:locid/:animalname", function(req, res)
+		local locid = req.params.locid
+		local animalname = req.params.animalname
+
+		local photoname = req.body.photoname
+
+		local succ,notf,code = deletephoto(locid,animalname,photoname)
+		if not succ then
+			p("ERROR:",notf)
+			return res:send(notf,code)
+		end
+		
+		res:send("",200)
+	end)
+
 	server:delete("/photos/:locid/:animalname/:photoname", function(req, res)
 		local locid = req.params.locid
 		local animalname = req.params.animalname
 		local photoname = req.params.photoname
+
+		photoname = photoname:gsub("%%20"," ")
 
 		local succ,notf,code = deletephoto(locid,animalname,photoname)
 		if not succ then
