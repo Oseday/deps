@@ -258,15 +258,6 @@
 							$("#progressparent").slideUp(120);
 							$("#progressbar").attr("style",`width: 0%`);
 						})
-
-
-						/*let r = await fetch(`https://verbipati.org/photos/${locname}/${aniname}`, {method: "POST", body: formData, 
-						observe(observer) { 
-							observer.onresponseprogress = e => console.log(e);
-							observer.onrequestprogress = e => console.log(e);
-							observer.onstatechange = n => console.log(observer.state)
-						}}); */
-						//console.log('Upload HTTP response code:',r.status); 
 					} catch(e) {
 						console.log('error:', e);
 					}
