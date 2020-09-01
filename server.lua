@@ -19,7 +19,7 @@ if jit.os=="Windows" then
 	isHttps = false
 else
 	mc = "depsMoonCake/mooncake"
-	ip = "172.26.10.180"
+	ip = "172.26.15.84"
 	porthttps = 443
 	port = 80
 	_G.EXECPATH = _G.EXECPATH .."/"
