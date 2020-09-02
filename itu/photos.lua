@@ -115,7 +115,7 @@ function addphoto(locid,animalname,photoname,tempdir)
 	local err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
 	if err == nil then 
 		p("ERR1:",notf)
-		timer.sleep(100);
+		timer.sleep(50);
 		err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
 		if err == nil then 
 			return false,notf,500 
