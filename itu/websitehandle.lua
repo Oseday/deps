@@ -23,6 +23,7 @@ function module.setupServer(Server,MoonCake)
 
 	StaticFS.addstatic(ITUDir.."/","/")
 	StaticFS.addstatic(_G.EXECPATH.."itu/photos","/photos")
+	StaticFS.addstatic(_G.EXECPATH.."itu/minphotos","/minphotos")
 
 	----StaticFS.addstatic(_G.EXECPATH.."ssl-certs/","/.well-known/acme-challenge")
 	----StaticFS.addstatic(_G.EXECPATH.."zerossl/","/.well-known/acme-challenge")
