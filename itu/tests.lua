@@ -20,13 +20,14 @@ scanrecursive(
 	"/home/centos/itu/photos",
 	"/home/centos/itu/minphotos",
 	function(from,to)
+		print(from,to)
 		vips.Image.thumbnail(from, 300):write_to_file(to)
 	end
 )
 
 print"done"
 
---./luvit /home/centos/deps/ose/itu/tests.lua
+--cd deps/ose && git pull origin master && cd ../.. && sudo ./luvit /home/centos/deps/ose/itu/tests.lua
 
 
 --[[
