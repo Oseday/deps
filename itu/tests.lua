@@ -1,5 +1,35 @@
-local vips = require "vips"
+local vips = require"vips"
+local fs = require"fs"
 
+local OSS = jit.os=="Windows" and "\\" or "/"
+
+
+function scanrecursive(pathfrom,pathto,f)
+	for file,types in fs.scandirSync(pathfrom) do
+		if types=="directory" then
+			scanrecursive(pathfrom..OSS..file, pathto..OSS..file,f)
+		else
+			p(pcall(f,pathfrom..OSS..file, pathto..OSS..file))
+		end
+	end
+end	
+
+
+
+scanrecursive(
+	"/home/centos/itu/photos",
+	"/home/centos/itu/minphotos",
+	function(from,to)
+		vips.Image.thumbnail(from, 300):write_to_file(to)
+	end
+)
+
+print"done"
+
+--./luvit /home/centos/deps/ose/itu/tests.lua
+
+
+--[[
 -- fast thumbnail generator
 local image = vips.Image.thumbnail("somefile.jpg", 128)
 image:write_to_file("tiny.jpg")
@@ -41,4 +71,4 @@ image = image:less(128):bandand():ifthenelse({ 0, 0, 255 }, image)
 image = image:colourspace("yxy")
 
 -- pass options to a save operation
-image:write_to_file("x.png", { compression = 9 })
+image:write_to_file("x.png", { compression = 9 })]]
