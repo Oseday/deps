@@ -228,7 +228,7 @@
 
 			let hrefsplit = window.location.href.split("/")
 			let locname = hrefsplit[hrefsplit.length-1]
-			locname = "HMvHFdBKV1Xmoup40Kjd"
+			//locname = "HMvHFdBKV1Xmoup40Kjd"
 			console.log(locname)
 
 
@@ -357,7 +357,7 @@ $(".modal").on('hidden.bs.modal', function () {
 										<div class="grid-sizer"></div>`;
 
 					for(let [_, animalphoto] of Object.entries(rowData)){		
-						trs = trs + `<div class="grid-item"> <img class="image-ose" src="https://verbipati.org/photos/${locname}/${animalname}/${animalphoto}" name="${animalphoto}" alt="image" title="${animalname}"></img> </div>`;
+						trs = trs + `<div class="grid-item"> <img class="image-ose" src="https://verbipati.org/minphotos/${locname}/${animalname}/${animalphoto}" mainsrc="https://verbipati.org/photos/${locname}/${animalname}/${animalphoto}" name="${animalphoto}" alt="image" title="${animalname}"></img> </div>`;
 					}
 
 					trs = trs + `</div> </div> </div>`;
@@ -368,7 +368,7 @@ $(".modal").on('hidden.bs.modal', function () {
 				$('.image-ose').click(function(argument) {
 					//$('#PhotoModalsrc').src = $(this).src;
 					console.log($(this).attr("src"))
-					$('#PhotoModalsrc').attr("src",$(this).attr("src"));
+					$('#PhotoModalsrc').attr("src",$(this).attr("mainsrc"));
 
 					console.log($(this).attr("data-animalname"))
 					$('#PhotoModaldel').attr("data-animalname",$(this).attr("data-animalname"));
