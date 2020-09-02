@@ -5,7 +5,9 @@ else
 	mc = "depsMoonCake/mooncake"
 end
 
+
 local fs = require"fs"
+local uv = require"luv"
 local json = require"json"
 local timer = require"timer"
 local helpers = require(mc.."/libs/helpers")
@@ -110,17 +112,24 @@ function addphoto(locid,animalname,photoname,tempdir)
 
 	if not Photos[locid] then Photos[locid]={} end
 	if not Photos[locid][animalname] then Photos[locid][animalname]={} end
-	
-	table.insert(Photos[locid][animalname], photoname)
-
-	SaveTable(Photos,"photosmeta")
 
 	local err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
-	if err == nil then return false,notf,500 end
+	if err == nil then 
+		p("ERR1:",notf)
+		timer.sleep(1);
+		err,notf = fs.renameSync(tempdir, aniloc..OSS..photoname)
+		if err == nil then 
+			return false,notf,500 
+		end
+	end
 
 	if vips then
 		vips.Image.thumbnail(aniloc..OSS..photoname, 300):write_to_file(anilocmin..OSS..photoname)
 	end
+	
+	table.insert(Photos[locid][animalname], photoname)
+
+	SaveTable(Photos,"photosmeta")
 
 	return true,"success",200
 end
