@@ -119,7 +119,7 @@ function addphoto(locid,animalname,photoname,tempdir)
 	if err == nil then return false,notf,500 end
 
 	if vips then
-		vips.Image.thumbnail(aniloc..OSS..photoname, 350):write_to_file(anilocmin..OSS..photoname)
+		vips.Image.thumbnail(aniloc..OSS..photoname, 300):write_to_file(anilocmin..OSS..photoname)
 	end
 
 	return true,"success",200
