@@ -215,24 +215,28 @@
 
 	<script src="https://unpkg.com/axios/dist/axios.min.js" type="text/javascript"></script>
 	<script type="text/javascript">
-
-
-
-		$(document).ready(function(){
-			/*var $grid = $('.grid').masonry({
-			  itemSelector: '.grid-item',
-			  percentPosition: true,
-			  columnWidth: '.grid-sizer'
-			});
-			$grid.masonry();*/
-
+		async function total(){
 			let hrefsplit = window.location.href.split("/")
 			let locname = hrefsplit[hrefsplit.length-1]
-			//locname = "HMvHFdBKV1Xmoup40Kjd"
+			locname = "HMvHFdBKV1Xmoup40Kjd"
 			console.log(locname)
 
+            let username = getCookie("username");
+            console.log(username)
+            var validusername = false
+            if (username) {
+            	await $.post("login", {username: username}).done( function(data) {
+                    validusername = true
+                }).fail(function(){
+                    
+                })
+            }
 
-			//const axios = require('axios');
+            if (!validusername){
+            	$('#fileupload').hide();
+            	$('#PhotoModaldel').hide();
+            	$('.newanibtn').hide();
+            }
 
 
 			$("#progressparent").slideUp(120);
@@ -333,6 +337,7 @@ $(".modal").on('hidden.bs.modal', function () {
 			})
 
 			$('#PhotoModaldel').click(async function(){
+				if (!validusername){return}
 				try{await fetch($("#PhotoModalsrc").attr("src"), {method: "DELETE"})}catch(e){console.log('error:', e);}
 				GetForm();
 				$('#PhotoModal').modal("hide");
@@ -351,7 +356,7 @@ $(".modal").on('hidden.bs.modal', function () {
 				for(let [animalname, rowData] of Object.entries(data)){
 					let trs = `
 							<div class="animal-container">
-								<h5 class="text-center text-capitalize">${decodeURI(animalname)} <a class="btn btn-outline-dark btn-sm no-padding" style="height: 24px; width: 24px;" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="${animalname}">+</a> </h5> 
+								<h5 class="text-center text-capitalize">${decodeURI(animalname)} <a ${validusername ? "" : "hidden"} class="btn btn-outline-dark btn-sm no-padding" style="height: 24px; width: 24px;" data-toggle="modal" id="openmodal" data-target="#UploadModal" data-animalname="${animalname}">+</a> </h5> 
 								<div class="container-fluid no-padding">
 									<div class="grid">
 										<div class="grid-sizer"></div>`;
@@ -420,9 +425,10 @@ $(".modal").on('hidden.bs.modal', function () {
 				console.log(data)
 				$("#locname").text(data)
 			})
-			
+		};
 
-		});
+
+		$(document).ready(total);
 	</script>
 
 

@@ -1,4 +1,30 @@
-local vips = require"vips"
+local array = {}
+local N = 1000000
+
+math.randomseed(13.15)
+
+for i = 1,N do
+	array[i]=i
+end
+
+for i = N,2,-1 do
+	local j = math.random(i)
+	array[i], array[j] = array[j], array[i]
+end
+
+for i=1,100 do
+	print(array[i]/N)
+end
+
+return function(lastpos)
+	return array[lastpos%N+1]
+end
+
+
+
+
+
+--[[local vips = require"vips"
 local fs = require"fs"
 
 local OSS = jit.os=="Windows" and "\\" or "/"
@@ -25,7 +51,7 @@ scanrecursive(
 	end
 )
 
-print"done"
+print"done"]]
 
 --cd deps/ose && git pull origin master && cd ../.. && sudo ./luvit /home/centos/deps/ose/itu/tests.lua
 
