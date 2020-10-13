@@ -117,8 +117,9 @@
             }
 
             $(".form-signin").submit(function(event) {
-                $.post("login", $("#inputUsername")).done( function(data) {
-                    setCookie("username", $("#inputUsername").val(), 90);
+            	let tuser = $("#inputUsername").val().toLowerCase();
+                $.post("/login", {username: tuser}).done( function(data) {
+                    setCookie("username", tuser, 90);
                     document.location.href = "viewer"
                 }).fail(function(){
                     //document.location.href = "viewer/" + $("#inputUsername").val(); // for omar's testing, remove later
