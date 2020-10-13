@@ -218,14 +218,14 @@
 		async function total(){
 			let hrefsplit = window.location.href.split("/")
 			let locname = hrefsplit[hrefsplit.length-1]
-			locname = "HMvHFdBKV1Xmoup40Kjd"
+			//locname = "HMvHFdBKV1Xmoup40Kjd"
 			console.log(locname)
 
             let username = getCookie("username");
             console.log(username)
             var validusername = false
             if (username) {
-            	await $.post("login", {username: username}).done( function(data) {
+            	await $.post("/login", {username: username}).done( function(data) {
                     validusername = true
                 }).fail(function(){
                     
