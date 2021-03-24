@@ -18,8 +18,8 @@ function Setup(port)
 	local server = MoonCake:new() 
 	
 	server:get("/ping", function(req, res)
-		
-		sleep(6)
+
+		sleep(3000)
 		res:finish("pong")
 	end)
 	
@@ -27,10 +27,26 @@ function Setup(port)
 end
 
 for i = 1,PORT_COUNT do
-	Setup(START_PORT + i)
+	Setup(START_PORT + i-1)
 end
 
 Setup(80)
+
+
+
+do--Info from scraper
+	local server = MoonCake:new() 
+	
+	server:post("/", function(req, res)
+		print(req.body)
+	end)
+	
+	server:start(351,ip)
+end
+
+
+--  http POST localhost:351 url
+--  curl --data "URL_GOES_HERE" localhost:351
 
 --[[
 
