@@ -37,8 +37,10 @@ Setup(80)
 do--Info from scraper
 	local server = MoonCake:new() 
 	
-	server:post("/", function(req, res)
+	server:get("/:test", function(req, res)
 		print(req.body)
+		print(req.params.test)
+		res:finish("done")
 	end)
 	
 	server:start(351,ip)
@@ -47,6 +49,7 @@ end
 
 --  http POST localhost:351 url
 --  curl --data "URL_GOES_HERE" localhost:351
+--  curl -d "TEST" -X POST localhost:351
 
 --[[
 
