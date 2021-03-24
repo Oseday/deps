@@ -66,6 +66,7 @@ coroutine.wrap(function()
 
 		local t = tick()
 		for name, tab in pairs(returniptable) do
+			print(name,t - tab.lasttick)
 			if t - tab.lasttick > 1 then
 				returniptable[name] = nil
 			end 
