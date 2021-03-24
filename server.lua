@@ -2,10 +2,10 @@
 
 require"ose/server"
 
-local PORT_COUNT = 0
+local PORT_COUNT = 1
 local START_PORT = 6969
 
-local ip = "172.26.10.71"
+local ip = "172.26.11.122"
 
 
 _G.EXECPATH = _G.EXECPATH .."/"
@@ -15,7 +15,7 @@ local MoonCake = require"depsMoonCake/mooncake"
 function Setup(port)
 	local server = MoonCake:new() 
 	
-	server:get("/ping", function(req, res) 
+	server:get("/ping", function(req, res)
 		res:finish("pong")
 	end)
 	
@@ -91,5 +91,5 @@ Analytics.setupTimer()
 
 -- git clone https://Oseday:3MicikP7fTvbkDS@github.com/Oseday/C-builds
 
--- cd deps/ose && git pull origin master && cd ../..
+-- cd deps/ose && git pull origin master && cd ../.. && sudo ./luvit server.lua
 
