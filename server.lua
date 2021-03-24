@@ -4,6 +4,9 @@ require"ose/server"
 
 local sleep = require"ose/sleep"
 
+local helpers = require("depsMoonCake/mooncake/libs/helpers")
+local tick = function() return helpers.getTime()/1000 end
+
 local PORT_COUNT = 1
 local START_PORT = 6969
 
@@ -19,10 +22,10 @@ function Setup(port)
 	local server = MoonCake:new() 
 	
 	server:get("/ping", function(req, res)
-		local TTL = os.clock() + 2
+		local TTL = tick() + 2
 		while true do
-			sleep(1)
-			if PASS_DATA ~= nil or os.clock() > TTL then
+			sleep(2)
+			if PASS_DATA ~= nil or tick() > TTL then
 				return
 			end
 		end
@@ -47,7 +50,7 @@ do--Info from scraper
 		print(req.params.test)
 		PASS_DATA = req.params.test
 		res:finish("done")
-		sleep(5)
+		sleep(10)
 		PASS_DATA = nil
 	end)
 	
