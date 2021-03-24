@@ -2,7 +2,7 @@
 
 require"ose/server"
 
-local PORT_COUNT = 50
+local PORT_COUNT = 0
 local START_PORT = 6969
 
 local ip = "172.26.10.71"
