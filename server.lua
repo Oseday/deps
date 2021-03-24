@@ -46,7 +46,8 @@ function Setup(port)
 					return
 				end
 			end]]
-			print(req.connection.remoteAddress)
+			p(req)
+			--print(req.connection.remoteAddress)
 			print(PASS_DATA)
 			res:finish(PASS_DATA or "no gpus")
 		end)()
