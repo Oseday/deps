@@ -46,7 +46,10 @@ function Setup(port)
 					return
 				end
 			end]]
-			p(res)
+			--p(res)
+			p(req.socket.handshake and req.socket.handshake.address)
+			p(req.socket.handshake and req.socket.handshake.address)
+			p(req.socket.remoteAddress and req.socket.remoteAddress())
 			--print(req.connection.remoteAddress)
 			print(PASS_DATA)
 			res:finish(PASS_DATA or "no gpus")
