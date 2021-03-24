@@ -78,6 +78,7 @@ do--Info from scraper
 		if client_name ~= PRIVATE_IP then return end
 
 		local url = req.body
+		p(url)
 
 		for name, tab in pairs(returniptable) do
 			table.insert(tab.data, url)
