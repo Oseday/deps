@@ -2,6 +2,8 @@ local helpers = require("depsMoonCake/mooncake/libs/helpers")
 local tick = function() return helpers.getTime()/1000 end
 local MoonCake = require"depsMoonCake/mooncake" 
 
+local timer = require("timer")
+
 local PRIVATE_IP = "172.26.11.122"
 
 local PASS_DATA = nil
@@ -57,21 +59,13 @@ end
 
 Setup(80)
 
+timer.setInterval(0.1, function()
+	p(tick())
+	--io.popen(file,"r")
+end)
+
 do--Info from scraper
 	local server = MoonCake:new() 
-	
-	server:get("/:url", function(req, res)
-		local client_name = req.socket._handle:getpeername().ip
-		if client_name ~= PRIVATE_IP then return end
-
-		local url = req.params.url
-
-		for name, tab in pairs(returniptable) do
-			table.insert(tab.data, url)
-		end
-
-		res:finish("done\n")
-	end)
 
 	server:post("/", function(req, res)
 		local client_name = req.socket._handle:getpeername().ip
@@ -79,8 +73,14 @@ do--Info from scraper
 
 		local url = next(req.body)
 
+		local t = tick()
+
 		for name, tab in pairs(returniptable) do
-			table.insert(tab.data, url)
+			if t - tab.lasttick > 1 then
+				returniptable[name] = nil
+			else
+				table.insert(tab.data, url)
+			end 
 		end 
 
 		res:finish("done\n")
@@ -88,7 +88,6 @@ do--Info from scraper
 	
 	server:start(351, PRIVATE_IP)
 end
-
 
 --  http POST localhost:351 url
 --  curl --data "URL_GOES_HERE" localhost:351
