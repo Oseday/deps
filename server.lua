@@ -52,6 +52,8 @@ do--Info from scraper
 	local server = MoonCake:new() 
 	
 	server:get("/:url", function(req, res)
+		local client_name = req.socket._handle:getpeername().ip
+		print(client_name)
 		local url = req.params.url
 
 		for name, tab in pairs(returniptable) do
