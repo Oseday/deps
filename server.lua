@@ -9,6 +9,7 @@ local START_PORT = 6969
 
 local ip = "172.26.11.122"
 
+local PASS_DATA = nil
 
 _G.EXECPATH = _G.EXECPATH .."/"
 
@@ -18,9 +19,14 @@ function Setup(port)
 	local server = MoonCake:new() 
 	
 	server:get("/ping", function(req, res)
-
-		sleep(1)
-		res:finish("pong")
+		local TTL = os.clock() + 2
+		while true do
+			sleep(1)
+			if PASS_DATA ~= nil or os.clock() > TTL then
+				return
+			end
+		end
+		res:finish(PASS_DATA or "no gpus")
 	end)
 	
 	server:start(port,ip)
@@ -33,14 +39,16 @@ end
 Setup(80)
 
 
-
 do--Info from scraper
 	local server = MoonCake:new() 
 	
 	server:get("/:test", function(req, res)
 		print(req.body)
 		print(req.params.test)
+		PASS_DATA = req.params.test
 		res:finish("done")
+		sleep(5)
+		PASS_DATA = nil
 	end)
 	
 	server:start(351,ip)
