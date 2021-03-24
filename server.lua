@@ -38,10 +38,13 @@ function Setup(port)
 				else
 					returniptable[client_name].data = {}
 					local str = "["
-					for _,d in ipairs(data) do
-						str = str .. string.format([["%s",]],d)
+					for i,d in ipairs(data) do
+						str = str .. string.format([["%s"]],d)
+						if i ~= #data then
+							str = str .. ","
+						end
 					end
-					str = str:sub(0,-1).."]"
+					str = str.."]"
 					p(str)
 					return res:finish(str)
 				end
