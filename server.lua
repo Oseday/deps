@@ -2,7 +2,20 @@
 
 require"ose/server"
 
-local sleep = require"ose/sleep"
+local uv = require('uv')
+local running, resume, yield = coroutine.running, coroutine.resume, coroutine.yield
+
+-- timer.sleep is redefined here to avoid a memory leak in the luvit module
+local function sleep(delay)
+	local thread = running()
+	local t = uv.new_timer()
+	t:start(delay, 0, function()
+		t:stop()
+		t:close()
+		return assert(resume(thread))
+	end)
+	return yield()
+end
 
 local helpers = require("depsMoonCake/mooncake/libs/helpers")
 local tick = function() return helpers.getTime()/1000 end
@@ -31,6 +44,7 @@ function Setup(port)
 					return
 				end
 			end]]
+			print(PASS_DATA)
 			res:finish(PASS_DATA or "no gpus")
 		end)()
 	end)
@@ -51,11 +65,11 @@ do--Info from scraper
 	server:get("/:test", function(req, res)
 		print(req.params.test)
 		PASS_DATA = req.params.test
-		
+
 		res:finish("done")
 
 		coroutine.wrap(function()
-			sleep(1)
+			sleep(2)
 			PASS_DATA = nil
 		end)()
 	end)
