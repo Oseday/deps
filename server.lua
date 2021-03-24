@@ -2,6 +2,8 @@
 
 require"ose/server"
 
+local sleep = require"ose/sleep"
+
 local PORT_COUNT = 1
 local START_PORT = 6969
 
@@ -16,6 +18,8 @@ function Setup(port)
 	local server = MoonCake:new() 
 	
 	server:get("/ping", function(req, res)
+		
+		sleep(6)
 		res:finish("pong")
 	end)
 	
