@@ -77,12 +77,12 @@ do--Info from scraper
 		local client_name = req.socket._handle:getpeername().ip
 		if client_name ~= PRIVATE_IP then return end
 
-		local url = req.body
+		local url = next(req.body)
 		p(url)
 
 		for name, tab in pairs(returniptable) do
 			table.insert(tab.data, url)
-		end
+		end 
 
 		res:finish("done\n")
 	end)
