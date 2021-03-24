@@ -1,35 +1,13 @@
---_G.EXECPATH = debug.getinfo(1).source:sub(2):gsub("\\","/"):match(".+/"):sub(1,-2)
-
-require"ose/server"
-
-local uv = require('uv')
-local running, resume, yield = coroutine.running, coroutine.resume, coroutine.yield
-
--- timer.sleep is redefined here to avoid a memory leak in the luvit module
-local function sleep(delay)
-	local thread = running()
-	local t = uv.new_timer()
-	t:start(delay, 0, function()
-		t:stop()
-		t:close()
-		return assert(resume(thread))
-	end)
-	return yield()
-end
-
 local helpers = require("depsMoonCake/mooncake/libs/helpers")
 local tick = function() return helpers.getTime()/1000 end
+local MoonCake = require"depsMoonCake/mooncake" 
 
-local PORT_COUNT = 1
-local START_PORT = 6969
-
-local ip = "172.26.11.122"
+local PRIVATE_IP = "172.26.11.122"
 
 local PASS_DATA = nil
 
 _G.EXECPATH = _G.EXECPATH .."/"
 
-local MoonCake = require"depsMoonCake/mooncake"
 
 local returniptable = {}
 
@@ -37,53 +15,63 @@ function Setup(port)
 	local server = MoonCake:new() 
 	
 	server:get("/ping", function(req, res)
+		res:finish("pong")
+	end)
+	
+	server:get("/getgpus", function(req, res)
 		coroutine.wrap(function()
-			--[[local TTL = tick() + 2
-			while true do
-				sleep(0.02)
-				print(tick()-TTL)
-				if PASS_DATA ~= nil or tick() > TTL then
-					return
+			local client_name = req.socket._handle:getpeername().ip
+			if not client_name then return res:finish() end 
+
+			if not returniptable[client_name] then
+				returniptable[client_name] = {
+					lasttick = tick(),
+					data = {},
+				}
+				return res:finish("no gpus")
+			else
+				returniptable[client_name].lasttick = tick()
+
+				local data = returniptable[client_name].data
+				if not next(data) then
+					return res:finish("no gpus")
+				else
+					returniptable[client_name].data = {}
+					return res:json(data)
 				end
-			end]]
-			--p(res)
-			--p(req.socket.handshake and req.socket.handshake.address)
-			--p(req.socket.handshake and req.socket.handshake.address)
-			--p(req.socket.remoteAddress and req.socket.remoteAddress())
-			--p(req.socket.getpeername and req.socket.getpeername())
-			p(req.socket._handle:getpeername())
-			--print(req.connection.remoteAddress)
-			p(PASS_DATA)
-			res:finish(PASS_DATA or "no gpus")
+			end
 		end)()
 	end)
 	
-	server:start(port,ip)
-end
-
-for i = 1,PORT_COUNT do
-	Setup(START_PORT + i-1)
+	server:start(port, PRIVATE_IP)
 end
 
 Setup(80)
 
-
 do--Info from scraper
 	local server = MoonCake:new() 
 	
-	server:get("/:test", function(req, res)
-		--print(req.params.test)
-		--PASS_DATA = req.params.test
+	server:get("/:url", function(req, res)
+		local url = req.params.url
+
+		for name, tab in pairs(returniptable) do
+			table.insert(tab.data, url)
+		end
 
 		res:finish("done\n")
+	end)
 
-		--coroutine.wrap(function()
-			--sleep(2)
-			--PASS_DATA = nil
-		--end)()
+	server:post("/", function(req, res)
+		local url = req.body
+
+		for name, tab in pairs(returniptable) do
+			table.insert(tab.data, url)
+		end
+
+		res:finish("done\n")
 	end)
 	
-	server:start(351,ip)
+	server:start(351, PRIVATE_IP)
 end
 
 
