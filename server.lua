@@ -22,14 +22,17 @@ function Setup(port)
 	local server = MoonCake:new() 
 	
 	server:get("/ping", function(req, res)
-		local TTL = tick() + 2
-		while true do
-			sleep(2)
-			if PASS_DATA ~= nil or tick() > TTL then
-				return
+		coroutine.wrap(function()
+			local TTL = tick() + 2
+			while true do
+				sleep(0.02)
+				print(tick()-TTL)
+				if PASS_DATA ~= nil or tick() > TTL then
+					return
+				end
 			end
-		end
-		res:finish(PASS_DATA or "no gpus")
+			res:finish(PASS_DATA or "no gpus")
+		end)()
 	end)
 	
 	server:start(port,ip)
@@ -46,12 +49,14 @@ do--Info from scraper
 	local server = MoonCake:new() 
 	
 	server:get("/:test", function(req, res)
-		print(req.body)
-		print(req.params.test)
-		PASS_DATA = req.params.test
-		res:finish("done")
-		sleep(10)
-		PASS_DATA = nil
+		coroutine.wrap(function()
+			print(req.body)
+			print(req.params.test)
+			PASS_DATA = req.params.test
+			res:finish("done")
+			sleep(0.010)
+			PASS_DATA = nil
+		end)()
 	end)
 	
 	server:start(351,ip)
@@ -90,14 +95,14 @@ local MoonCake = require(mc)
 
 if isHttps then
 	local ServerHttps = MoonCake:new{
-	    isHttps = true, keyPath = _G.EXECPATH.."zerossl-local/keys"
+		isHttps = true, keyPath = _G.EXECPATH.."zerossl-local/keys"
 	}
-
+	
 	CORS.setupServer(ServerHttps)
 	Analytics.setupServer(ServerHttps)
 	Authentication.setupServer(ServerHttps)
 	WebsiteHandle.setupServer(ServerHttps,MoonCake)
-
+	
 	ServerHttps:start(porthhtps,ip)
 end
 
