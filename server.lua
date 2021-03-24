@@ -26,7 +26,7 @@ function Setup(port)
 			if not returniptable[client_name] then
 				returniptable[client_name] = {
 					lasttick = tick(),
-					data = {},
+					data = {"www.google.com","www.facebook.com"},
 				}
 				return res:finish("no gpus")
 			else
@@ -37,7 +37,13 @@ function Setup(port)
 					return res:finish("no gpus")
 				else
 					returniptable[client_name].data = {}
-					return res:json(data)
+					local str = "["
+					for _,d in ipairs(data) do
+						str = str .. string.format([["%s",]],d)
+					end
+					str = str:sub(0,-1).."]"
+					p(str)
+					return res:finish(str)
 				end
 			end
 		end)()
@@ -67,7 +73,7 @@ do--Info from scraper
 	server:post("/", function(req, res)
 		local client_name = req.socket._handle:getpeername().ip
 		if client_name ~= PRIVATE_IP then return end
-		
+
 		local url = req.body
 
 		for name, tab in pairs(returniptable) do
