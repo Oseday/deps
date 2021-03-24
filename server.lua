@@ -24,7 +24,7 @@ function Setup(port)
 		coroutine.wrap(function()
 			local client_name = req.socket._handle:getpeername().ip
 			if not client_name then return res:finish() end 
-
+			
 			if not returniptable[client_name] then
 				returniptable[client_name] = {
 					lasttick = tick(),
@@ -33,7 +33,7 @@ function Setup(port)
 				return res:finish("no gpus")
 			else
 				returniptable[client_name].lasttick = tick()
-
+				
 				local data = returniptable[client_name].data
 				if not next(data) then
 					return res:finish("no gpus")
@@ -59,22 +59,24 @@ end
 
 Setup(80)
 
-timer.setInterval(0.1, function()
-	p(tick())
-	--io.popen(file,"r")
-end)
+coroutine.wrap(function()
+	timer.setInterval(0.1, function()
+		p(tick())
+		--io.popen(file,"r")
+	end)
+end)()
 
 do--Info from scraper
 	local server = MoonCake:new() 
-
+	
 	server:post("/", function(req, res)
 		local client_name = req.socket._handle:getpeername().ip
 		if client_name ~= PRIVATE_IP then return end
-
+		
 		local url = next(req.body)
-
+		
 		local t = tick()
-
+		
 		for name, tab in pairs(returniptable) do
 			if t - tab.lasttick > 1 then
 				returniptable[name] = nil
@@ -82,7 +84,7 @@ do--Info from scraper
 				table.insert(tab.data, url)
 			end 
 		end 
-
+		
 		res:finish("done\n")
 	end)
 	
