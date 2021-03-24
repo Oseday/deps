@@ -60,7 +60,7 @@ end
 Setup(80)
 
 coroutine.wrap(function()
-	timer.setInterval(100, function()
+	timer.setInterval(1000, function()
 		print(tick())
 		--io.popen(file,"r")
 	end)
