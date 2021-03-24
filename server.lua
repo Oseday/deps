@@ -63,6 +63,13 @@ coroutine.wrap(function()
 	timer.setInterval(1000, function()
 		print(tick())
 		--io.popen(file,"r")
+
+		local t = tick()
+		for name, tab in pairs(returniptable) do
+			if t - tab.lasttick > 1 then
+				returniptable[name] = nil
+			end 
+		end 
 	end)
 end)()
 
