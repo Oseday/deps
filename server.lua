@@ -31,6 +31,8 @@ _G.EXECPATH = _G.EXECPATH .."/"
 
 local MoonCake = require"depsMoonCake/mooncake"
 
+local returniptable = {}
+
 function Setup(port)
 	local server = MoonCake:new() 
 	
@@ -44,6 +46,7 @@ function Setup(port)
 					return
 				end
 			end]]
+			print(req.connection.remoteAddress)
 			print(PASS_DATA)
 			res:finish(PASS_DATA or "no gpus")
 		end)()
@@ -63,15 +66,15 @@ do--Info from scraper
 	local server = MoonCake:new() 
 	
 	server:get("/:test", function(req, res)
-		print(req.params.test)
-		PASS_DATA = req.params.test
+		--print(req.params.test)
+		--PASS_DATA = req.params.test
 
 		res:finish("done")
 
-		coroutine.wrap(function()
-			sleep(2)
-			PASS_DATA = nil
-		end)()
+		--coroutine.wrap(function()
+			--sleep(2)
+			--PASS_DATA = nil
+		--end)()
 	end)
 	
 	server:start(351,ip)
