@@ -23,14 +23,14 @@ function Setup(port)
 	
 	server:get("/ping", function(req, res)
 		coroutine.wrap(function()
-			local TTL = tick() + 2
+			--[[local TTL = tick() + 2
 			while true do
 				sleep(0.02)
 				print(tick()-TTL)
 				if PASS_DATA ~= nil or tick() > TTL then
 					return
 				end
-			end
+			end]]
 			res:finish(PASS_DATA or "no gpus")
 		end)()
 	end)
@@ -49,12 +49,13 @@ do--Info from scraper
 	local server = MoonCake:new() 
 	
 	server:get("/:test", function(req, res)
+		print(req.params.test)
+		PASS_DATA = req.params.test
+		
+		res:finish("done")
+
 		coroutine.wrap(function()
-			print(req.body)
-			print(req.params.test)
-			PASS_DATA = req.params.test
-			res:finish("done")
-			sleep(0.010)
+			sleep(1)
 			PASS_DATA = nil
 		end)()
 	end)
