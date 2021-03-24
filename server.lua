@@ -53,7 +53,8 @@ do--Info from scraper
 	
 	server:get("/:url", function(req, res)
 		local client_name = req.socket._handle:getpeername().ip
-		print(client_name)
+		if client_name ~= PRIVATE_IP then return end
+
 		local url = req.params.url
 
 		for name, tab in pairs(returniptable) do
@@ -64,6 +65,9 @@ do--Info from scraper
 	end)
 
 	server:post("/", function(req, res)
+		local client_name = req.socket._handle:getpeername().ip
+		if client_name ~= PRIVATE_IP then return end
+		
 		local url = req.body
 
 		for name, tab in pairs(returniptable) do
