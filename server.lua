@@ -2,53 +2,31 @@
 
 require"ose/server"
 
+local PORT_COUNT = 50
+local START_PORT = 6969
 
-local CORS = require"ose/CORS"
+local ip = "172.26.10.71"
 
-local Tracker = require"ose/itu/tracker"
-local Photos = require"ose/itu/photos"
-local WebsiteHandle = require"ose/itu/websitehandle"
 
-local isHttps = false
+_G.EXECPATH = _G.EXECPATH .."/"
 
-local mc,ip,port,porthttps
-if jit.os=="Windows" then
-	mc = "mooncake"--"./ndeps/deps/depsMoonCake/mooncake"
-	ip = "127.0.0.1"
-	port = 80
-	isHttps = false
-else
-	mc = "depsMoonCake/mooncake"
-	ip = "172.26.15.84"
-	porthttps = 443
-	port = 80
-	_G.EXECPATH = _G.EXECPATH .."/"
+local MoonCake = require"depsMoonCake/mooncake"
+
+function Setup(port)
+	local server = MoonCake:new() 
+	
+	server:get("/ping", function(req, res) 
+		res:finish("pong")
+	end)
+	
+	server:start(port,ip)
 end
 
-local MoonCake = require(mc)
-
-function Setup(Server,port)
-	CORS.setupServer(Server)
-	--Analytics.setupServer(Server)
-	--Authentication.setupServer(Server)
-	WebsiteHandle.setupServer(Server,MoonCake)
-
-	Tracker.setupServer(Server)
-
-	Photos.setupServer(Server)
-
-	Server:start(port,ip)
+for i = 1,PORT_COUNT do
+	Setup(START_PORT + i)
 end
 
-if isHttps then
-	local ServerHttps = MoonCake:new{
-	    isHttps = true, keyPath = _G.EXECPATH.."zerossl-local/keys"
-	}
-
-	Setup(ServerHttps,porthttps,ip)
-end
-
-Setup(MoonCake:new(),port,ip)
+Setup(80)
 
 --[[
 
