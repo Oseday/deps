@@ -47,12 +47,13 @@ function Setup(port)
 				end
 			end]]
 			--p(res)
-			p(req.socket.handshake and req.socket.handshake.address)
-			p(req.socket.handshake and req.socket.handshake.address)
-			p(req.socket.remoteAddress and req.socket.remoteAddress())
-			p(req.socket.getpeername and req.socket.getpeername())
+			--p(req.socket.handshake and req.socket.handshake.address)
+			--p(req.socket.handshake and req.socket.handshake.address)
+			--p(req.socket.remoteAddress and req.socket.remoteAddress())
+			--p(req.socket.getpeername and req.socket.getpeername())
+			p(req.socket._handle:getpeername())
 			--print(req.connection.remoteAddress)
-			print(PASS_DATA)
+			p(PASS_DATA)
 			res:finish(PASS_DATA or "no gpus")
 		end)()
 	end)
@@ -74,7 +75,7 @@ do--Info from scraper
 		--print(req.params.test)
 		--PASS_DATA = req.params.test
 
-		res:finish("done")
+		res:finish("done\n")
 
 		--coroutine.wrap(function()
 			--sleep(2)
