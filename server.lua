@@ -19,7 +19,7 @@ function Setup(port)
 	
 	server:get("/ping", function(req, res)
 
-		sleep(3000)
+		sleep(1)
 		res:finish("pong")
 	end)
 	
