@@ -30,7 +30,7 @@ function Setup(port)
 					lasttick = tick(),
 					data = {"www.google.com","www.facebook.com"},
 				}
-				return res:finish("no gpus")
+				return res:json(returniptable[client_name].data)--finish("no gpus")
 			else
 				returniptable[client_name].lasttick = tick()
 				
