@@ -21,6 +21,9 @@ function Setup(port)
 	end)
 	
 	server:get("/getgpus", function(req, res)
+		do--testing
+			return res:json{"www.google.com"}
+		end
 		coroutine.wrap(function()
 			local client_name = req.socket._handle:getpeername().ip
 			if not client_name then return res:finish() end 
