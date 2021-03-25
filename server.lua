@@ -28,9 +28,9 @@ function Setup(port)
 			if not returniptable[client_name] then
 				returniptable[client_name] = {
 					lasttick = tick(),
-					data = {"www.google.com","www.facebook.com"},
+					data = {},
 				}
-				return res:json(returniptable[client_name].data)--finish("no gpus")
+				return res:finish("new connection")--finish("no gpus")
 			else
 				returniptable[client_name].lasttick = tick()
 				
