@@ -5,7 +5,7 @@ local MoonCake = require"depsMoonCake/mooncake"
 local timer = require("timer")
 
 local PRIVATE_IP = "172.26.11.122"
-
+local TIME_OUT = 3
 local PASS_DATA = nil
 
 _G.EXECPATH = _G.EXECPATH .."/"
@@ -39,16 +39,9 @@ function Setup(port)
 					return res:finish("no gpus")
 				else
 					returniptable[client_name].data = {}
-					local str = "["
-					for i,d in ipairs(data) do
-						str = str .. string.format([["%s"]],d)
-						if i ~= #data then
-							str = str .. ","
-						end
-					end
-					str = str.."]"
-					p(str)
-					return res:finish(str)
+					
+					p(data)
+					return res:json(data)
 				end
 			end
 		end)()
@@ -67,7 +60,7 @@ coroutine.wrap(function()
 		local t = tick()
 		for name, tab in pairs(returniptable) do
 			print(name,t - tab.lasttick)
-			if t - tab.lasttick > 1 then
+			if t - tab.lasttick > TIME_OUT then
 				returniptable[name] = nil
 			end 
 		end 
@@ -84,9 +77,8 @@ do--Info from scraper
 		local url = next(req.body)
 		
 		local t = tick()
-		
 		for name, tab in pairs(returniptable) do
-			if t - tab.lasttick > 1 then
+			if t - tab.lasttick > TIME_OUT then
 				returniptable[name] = nil
 			else
 				table.insert(tab.data, url)
