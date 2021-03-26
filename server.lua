@@ -62,7 +62,6 @@ coroutine.wrap(function()
 
 		local t = tick()
 		for name, tab in pairs(returniptable) do
-			print(name,t - tab.lasttick)
 			if t - tab.lasttick > TIME_OUT then
 				returniptable[name] = nil
 			end 
@@ -77,6 +76,8 @@ do--Info from scraper
 		local client_name = req.socket._handle:getpeername().ip
 		if client_name ~= PRIVATE_IP then return end
 		
+		p(req.body)
+
 		local url,ect = next(req.body)
 		if ect ~= "" then
 			url = url .. "=" .. ect
