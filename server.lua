@@ -78,7 +78,7 @@ do--Info from scraper
 		if client_name ~= PRIVATE_IP then return end
 		
 		local url,ect = next(req.body)
-		if ect then
+		if ect=="" then
 			url = url .. "=" .. ect
 		end
 		p(url)
