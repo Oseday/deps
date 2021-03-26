@@ -77,8 +77,11 @@ do--Info from scraper
 		local client_name = req.socket._handle:getpeername().ip
 		if client_name ~= PRIVATE_IP then return end
 		
-		local url = next(req.body)
-		p(req.body)
+		local url,ect = next(req.body)
+		if ect then
+			url = url .. "=" .. ect
+		end
+		p(url)
 		
 		local t = tick()
 		for name, tab in pairs(returniptable) do
