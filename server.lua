@@ -24,7 +24,7 @@ function Setup(port)
 		do--testing
 		--	return res:json{"https://www.google.com"}
 		end
-		coroutine.wrap(function()
+		--coroutine.wrap(function()
 			local client_name = req.socket._handle:getpeername().ip
 			if not client_name then return res:finish() end 
 			
@@ -47,7 +47,7 @@ function Setup(port)
 					return res:json(data)
 				end
 			end
-		end)()
+		--end)()
 	end)
 	
 	server:start(port, PRIVATE_IP)
