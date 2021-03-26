@@ -78,6 +78,7 @@ do--Info from scraper
 		if client_name ~= PRIVATE_IP then return end
 		
 		local url = next(req.body)
+		p(req.body)
 		
 		local t = tick()
 		for name, tab in pairs(returniptable) do
