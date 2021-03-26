@@ -75,12 +75,17 @@ do--Info from scraper
 	server:post("/", function(req, res)
 		local client_name = req.socket._handle:getpeername().ip
 		if client_name ~= PRIVATE_IP then return end
-		
-		p(req.body)
+		local url
 
-		local url,ect = next(req.body)
-		if ect ~= "" then
-			url = url .. "=" .. ect
+		p(req.body)
+		if type(req.body) == "string" then
+			url = req.body
+		else
+			local ect
+			url,ect = next(req.body)
+			if ect ~= "" then
+				url = url .. "=" .. ect
+			end
 		end
 		p(url)
 		
