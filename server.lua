@@ -57,7 +57,7 @@ Setup(80)
 
 coroutine.wrap(function()
 	timer.setInterval(1000, function()
-		print(tick())
+		--print(tick())
 		--io.popen(file,"r")
 
 		local t = tick()
