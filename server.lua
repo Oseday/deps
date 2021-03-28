@@ -6,7 +6,7 @@ local staticfs = require"ose/staticfs"
 
 local timer = require("timer")
 
-local PRIVATE_IP = "172.26.11.219"
+local PRIVATE_IP = "172.26.11.122"
 local TIME_OUT = 3
 local PASS_DATA = nil
 
