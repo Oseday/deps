@@ -43,7 +43,7 @@ function module.use(req,res)
 	if req.method ~= "GET" then return true end
 	local next = false
 	local nurl = req.url
-	x = string.find(nurl,"%.html$")
+	local x = string.find(nurl,"%.html$")
 	if x then
 		res:redirect(string.sub(nurl,1,x-1))
 	elseif not string.match(nurl,"%.") then
@@ -53,7 +53,7 @@ function module.use(req,res)
 	if nfile then
 		res:sendFile(nfile)
 	else
-		print"go to next()"
+		--print"go to next()"
 	   	next = true
 	end
 	return next
