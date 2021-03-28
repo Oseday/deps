@@ -1,10 +1,12 @@
 local helpers = require("depsMoonCake/mooncake/libs/helpers")
 local tick = function() return helpers.getTime()/1000 end
 local MoonCake = require"depsMoonCake/mooncake" 
+local staticfs = require"ose/staticfs"
+
 
 local timer = require("timer")
 
-local PRIVATE_IP = "172.26.11.122"
+local PRIVATE_IP = "172.26.11.219"
 local TIME_OUT = 3
 local PASS_DATA = nil
 
@@ -49,6 +51,8 @@ function Setup(port)
 			end
 		--end)()
 	end)
+
+	staticfs.addstatic(_G.EXECPATH.."website/","/")
 	
 	server:start(port, PRIVATE_IP)
 end
@@ -68,6 +72,31 @@ coroutine.wrap(function()
 		end 
 	end)
 end)()
+
+local links = {
+	"https://www.google.com/",
+	"https://stackoverflow.com/"
+}
+
+local coro = require"coro-http"
+
+coroutine.wrap(function()
+	for _,url in pairs(links) do
+		coroutine.wrap(function()
+			while true do
+				local res,body = coro.request("GET",url)
+				if res.code <= 300 then
+					
+				else
+
+				end
+			end
+		end)()
+	end
+	--coro.request(method, url, headers, body, timeout)
+end)()
+
+
 
 do--Info from scraper
 	local server = MoonCake:new() 
