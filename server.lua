@@ -1,8 +1,9 @@
 local helpers = require("depsMoonCake/mooncake/libs/helpers")
 local tick = function() return helpers.getTime()/1000 end
 local MoonCake = require"depsMoonCake/mooncake" 
-local staticfs = require"ose/staticfs"
 
+local staticfs = require"ose/staticfs"
+local cors = require"ose/CORS"
 
 local timer = require("timer")
 
@@ -18,41 +19,45 @@ local returniptable = {}
 function Setup(port)
 	local server = MoonCake:new() 
 	
+	cors.setupServer(server)
+	
+	server:get("/",function(req, res) res:sendFile(_G.EXECPATH.."website/index.html") end)
+
+	staticfs.addstatic(_G.EXECPATH.."website/","/")
+	
+	server:use(function(req, res, next)
+		local t = staticfs.use(req, res)
+		if t then next() end
+	end)
+	
 	server:get("/ping", function(req, res)
 		res:finish("pong")
 	end)
 	
 	server:get("/getgpus", function(req, res)
-		do--testing
-		--	return res:json{"https://www.google.com"}
-		end
-		--coroutine.wrap(function()
-			local client_name = req.socket._handle:getpeername().ip
-			if not client_name then return res:finish() end 
+		local client_name = req.socket._handle:getpeername().ip
+		if not client_name then return res:finish() end 
+		
+		if not returniptable[client_name] then
+			returniptable[client_name] = {
+				lasttick = tick(),
+				data = {},
+			}
+			return res:finish("new connection")
+		else
+			returniptable[client_name].lasttick = tick()
 			
-			if not returniptable[client_name] then
-				returniptable[client_name] = {
-					lasttick = tick(),
-					data = {},
-				}
-				return res:finish("new connection")--finish("no gpus")
+			local data = returniptable[client_name].data
+			if not next(data) then
+				return res:finish("no gpus")
 			else
-				returniptable[client_name].lasttick = tick()
+				returniptable[client_name].data = {}
 				
-				local data = returniptable[client_name].data
-				if not next(data) then
-					return res:finish("no gpus")
-				else
-					returniptable[client_name].data = {}
-					
-					p(data)
-					return res:json(data)
-				end
+				p(data)
+				return res:json(data)
 			end
-		--end)()
+		end
 	end)
-
-	staticfs.addstatic(_G.EXECPATH.."website/","/")
 	
 	server:start(port, PRIVATE_IP)
 end
@@ -61,9 +66,6 @@ Setup(80)
 
 coroutine.wrap(function()
 	timer.setInterval(1000, function()
-		--print(tick())
-		--io.popen(file,"r")
-
 		local t = tick()
 		for name, tab in pairs(returniptable) do
 			if t - tab.lasttick > TIME_OUT then
@@ -88,7 +90,7 @@ coroutine.wrap(function()
 				if res.code <= 300 then
 					
 				else
-
+					
 				end
 			end
 		end)()
@@ -105,7 +107,7 @@ do--Info from scraper
 		local client_name = req.socket._handle:getpeername().ip
 		if client_name ~= PRIVATE_IP then return end
 		local url
-
+		
 		p(req.body)
 		if type(req.body) == "string" then
 			url = req.body
