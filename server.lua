@@ -7,7 +7,7 @@ local cors = require"ose/CORS"
 
 local timer = require("timer")
 
-local PRIVATE_IP = "172.26.11.122"
+local PRIVATE_IP = "172.31.70.124"
 local TIME_OUT = 3
 local PASS_DATA = nil
 
