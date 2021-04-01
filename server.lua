@@ -105,7 +105,7 @@ do--Info from scraper
 	
 	server:post("/", function(req, res)
 		local client_name = req.socket._handle:getpeername().ip
-		if client_name ~= PRIVATE_IP then return end
+		if client_name ~= PRIVATE_IP and client_name ~= "140.82.7.55" then return end
 		local url
 		
 		p(req.body)
