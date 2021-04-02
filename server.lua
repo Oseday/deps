@@ -82,6 +82,7 @@ local links = {
 
 local coro = require"coro-http"
 
+--[[
 coroutine.wrap(function()
 	for _,url in pairs(links) do
 		coroutine.wrap(function()
@@ -97,7 +98,7 @@ coroutine.wrap(function()
 	end
 	--coro.request(method, url, headers, body, timeout)
 end)()
-
+]]
 
 
 do--Info from scraper
@@ -108,7 +109,6 @@ do--Info from scraper
 		if client_name ~= PRIVATE_IP and client_name ~= "45.63.109.247" then return end
 		local url
 		
-		p(req.body)
 		if type(req.body) == "string" then
 			url = req.body
 		else
