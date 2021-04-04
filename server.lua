@@ -10,6 +10,7 @@ local timer = require("timer")
 local PRIVATE_IP = "172.31.70.124"
 local TIME_OUT = 3
 local PASS_DATA = nil
+local ENCRYPTION_KEY = "keyyyyyyyyyyyyyy"
 
 _G.EXECPATH = _G.EXECPATH .."/"
 
@@ -100,9 +101,32 @@ coroutine.wrap(function()
 end)()
 ]]
 
+local cipher = require('openssl').cipher.get("aes-256-cbc")
 
 do--Info from scraper
 	local server = MoonCake:new() 
+
+	server:post("/cipher", function(req, res)
+		local message = req.body
+		if type(message) ~= "string" then
+			return res:finish(([[Expected body to be string, not %s. Add header: {Content-Type: 'text/plain'}]]):format(message), 400)
+		end
+
+		local ciphered = message --:sub(60)
+
+		local url = cipher:decrpyt(ciphered, ENCRYPTION_KEY)
+
+		local t = tick()
+		for name, tab in pairs(returniptable) do
+			if t - tab.lasttick > TIME_OUT then
+				returniptable[name] = nil
+			else
+				table.insert(tab.data, url)
+			end 
+		end 
+		
+		res:finish("done\n")
+	end)
 	
 	server:post("/", function(req, res)
 		local client_name = req.socket._handle:getpeername().ip
