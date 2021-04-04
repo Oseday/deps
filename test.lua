@@ -1,16 +1,20 @@
-local ciphered = "'r\\160\\236\\030}u\\215Bg\\2290\\235~\\025\\155\\229'\\n'"
+--[[local ciphered = "8Z_\144\137\161\143\030\237\240\2368\241oB\197OI\246\137\240O\030\240\180\025&\175\208\199'+^\\aw((h$\0305\224\017.6\030\248\0205Vt\005\255\250\1392\\b')w\211lI\190"
 
 local x = ciphered:gsub("\\(%d%d%d)", function(s) return string.char(s) end)
 
-print(x)
+p(x)
 
-print(x:sub(2,-4))
+local base64 = require"base64"
+
+p(base64)]]
+
+--print(x:sub(2,-4))
 
 
 
-do return end
+--do return end
 
-local method = "aes256"
+local method = "aes-256-cbc"
 
 local key = args[2]
 local data = args[3]
@@ -22,19 +26,16 @@ if not data then
 	return print"ERROR: NO DATA"
 end
 
-local openssl = require('openssl')
-
-local cipher = require('openssl').cipher.get("aes-256-cbc")
+local cipher = require('openssl').cipher.get(method)
 local encrypted,notf = cipher:encrypt(data, key)
-
 
 if not encrypted then
 	print("ERROR:",notf)
 	return
 end
 
-
-p(encrypted)
+local based = require"base64".encode(encrypted)
+print(based)
 
 return
 --[[

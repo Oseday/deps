@@ -104,6 +104,7 @@ end)()
 local cipher = require('openssl').cipher.get("aes-256-cbc")
 
 do--Info from scraper
+	local base64 = require"base64"
 	local server = MoonCake:new() 
 
 	server:post("/cipher", function(req, res)
@@ -112,7 +113,7 @@ do--Info from scraper
 			return res:finish(([[Expected body to be string, not %s. Add header: {Content-Type: 'text/plain'}]]):format(message), 400)
 		end
 
-		local ciphered = message:gsub("\\(%d%d%d)", function(s) return string.char(s) end):sub(2,-3)
+		local ciphered = base64.decode(message:sub(1,-2))--message:gsub("\\(%d%d%d)", function(s) return string.char(s) end):sub(2,-3)
 
 		p("ciphered:",ciphered)
 
