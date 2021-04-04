@@ -116,9 +116,10 @@ do--Info from scraper
 
 		p("ciphered:",ciphered)
 
-		local url = cipher:decrypt(ciphered, ENCRYPTION_KEY)
+		local url,notf = cipher:decrypt(ciphered, ENCRYPTION_KEY)
 		
 		p("url:",url)
+		p("error:",notf)
 
 		local t = tick()
 		for name, tab in pairs(returniptable) do
