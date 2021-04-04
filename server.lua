@@ -106,6 +106,12 @@ local cipher = require('openssl').cipher.get("aes-256-cbc")
 do--Info from scraper
 	local base64 = require"base64"
 	local server = MoonCake:new() 
+	
+	server:post("/whatismyip", function(req, res)
+		local ip = req.socket._handle:getpeername().ip
+		p(ip)
+		res:finish(ip)
+	end)
 
 	server:post("/cipher", function(req, res)
 		local message = req.body
