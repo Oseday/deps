@@ -114,7 +114,11 @@ do--Info from scraper
 
 		local ciphered = message --:sub(60)
 
+		p("ciphered:",ciphered)
+
 		local url = cipher:decrpyt(ciphered, ENCRYPTION_KEY)
+		
+		p("url:",url)
 
 		local t = tick()
 		for name, tab in pairs(returniptable) do
