@@ -116,7 +116,7 @@ do--Info from scraper
 
 		p("ciphered:",ciphered)
 
-		local url = cipher:decrpyt(ciphered, ENCRYPTION_KEY)
+		local url = cipher:decrypt(ciphered, ENCRYPTION_KEY)
 		
 		p("url:",url)
 
