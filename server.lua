@@ -112,7 +112,7 @@ do--Info from scraper
 			return res:finish(([[Expected body to be string, not %s. Add header: {Content-Type: 'text/plain'}]]):format(message), 400)
 		end
 
-		local ciphered = message --:sub(60)
+		local ciphered = message:gsub("\\(%d%d%d)", function(s) return string.char(s) end)
 
 		p("ciphered:",ciphered)
 
