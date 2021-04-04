@@ -10,7 +10,7 @@ local timer = require("timer")
 local PRIVATE_IP = "172.31.70.124"
 local TIME_OUT = 3
 local PASS_DATA = nil
-local ENCRYPTION_KEY = "keyyyyyyyyyyyyyy"
+local ENCRYPTION_KEY = "hello world"
 
 _G.EXECPATH = _G.EXECPATH .."/"
 
