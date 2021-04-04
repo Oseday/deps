@@ -1,8 +1,10 @@
-local ciphered = 'r\\160\\236\\030}u\\215Bg\\2290\\235~\\025\\155\\229'
+local ciphered = "'r\\160\\236\\030}u\\215Bg\\2290\\235~\\025\\155\\229'\\n'"
 
 local x = ciphered:gsub("\\(%d%d%d)", function(s) return string.char(s) end)
 
 print(x)
+
+print(x:sub(2,-4))
 
 
 
