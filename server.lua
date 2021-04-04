@@ -107,7 +107,7 @@ do--Info from scraper
 	local base64 = require"base64"
 	local server = MoonCake:new() 
 	
-	server:post("/whatismyip", function(req, res)
+	server:get("/whatismyip", function(req, res)
 		local ip = req.socket._handle:getpeername().ip
 		p(ip)
 		res:finish(ip)
